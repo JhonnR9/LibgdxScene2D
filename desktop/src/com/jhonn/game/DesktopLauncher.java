@@ -10,6 +10,7 @@ public class DesktopLauncher {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setForegroundFPS(60);
 		config.setTitle("LibgdxScene2D");
+		config.setWindowedMode(640,480);
 		new Lwjgl3Application(new Scene2D(), config);
 	}
 }

@@ -1,31 +1,22 @@
 package com.jhonn.game;
 
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.jhonn.game.managers.ResourceManager;
+import com.jhonn.game.screens.MainGame;
 
-public class Scene2D extends ApplicationAdapter {
-	SpriteBatch batch;
-	Texture img;
-	
+public class Scene2D extends Game {
+
 	@Override
 	public void create () {
-		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
+		ResourceManager.getInstance().setDefaultSkin("skin/cloud-form-ui.json");
+		ResourceManager.getInstance().loadResources();
+		setScreen(new MainGame());
 	}
 
 	@Override
-	public void render () {
-		ScreenUtils.clear(1, 0, 0, 1);
-		batch.begin();
-		batch.draw(img, 0, 0);
-		batch.end();
-	}
-	
-	@Override
-	public void dispose () {
-		batch.dispose();
-		img.dispose();
+	public void dispose() {
+		super.dispose();
+		ResourceManager.getInstance().dispose();
 	}
 }
