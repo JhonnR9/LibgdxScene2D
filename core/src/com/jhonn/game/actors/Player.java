@@ -2,58 +2,81 @@ package com.jhonn.game.actors;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Align;
+import com.jhonn.game.box2d.BodyFactory;
 import com.jhonn.game.configs.AnimationConfig;
-import com.jhonn.game.constants.GameConst;
 import com.jhonn.game.managers.AnimationManager;
 import com.jhonn.game.managers.ResourceManager;
 
-import static com.jhonn.game.constants.GameConst.toPx;
+import java.util.Objects;
+
 import static com.jhonn.game.constants.GameConst.toUnits;
 
 public final class Player extends Actor {
     private final AnimationManager animationManager = new AnimationManager();
-    private final String walkRight = "walkLeft";
-    private final String walkLeft = "walkRight";
-    private boolean isMove = false;
-    private Float tileMapWidth, tileMapHeight;
-    private final float speed = 4.0f;
+    private final String walkHorizontal = "walkHorizontal", walkDown = "walkDown", walkUp = "walkUp";
 
-    public void setTileMapWidth(Float tileMapWidth) {
-        this.tileMapWidth = tileMapWidth;
+    private boolean isMoving = false;
+    private float tileMapWidth, tileMapHeight;
+
+    private Body body;
+
+    private boolean right, left, up, down;
+
+
+    public Player(World world) {
+        createAnimations();
+        setupSize();
+        createBody(world);
+
+
     }
 
-    public void setTileMapHeight(Float tileMapHeight) {
-        this.tileMapHeight = tileMapHeight;
+    public Player(World world, float x, float y) {
+        setPosition(x, y);
+        createAnimations();
+        setupSize();
+        createBody(world);
     }
 
-    private final Sprite frame = new Sprite();
+    private void createBody(World world){
+        BodyFactory bodyFactory = new BodyFactory(this);
+        body = bodyFactory.createBox(world, false);
 
-    public Player() {
-        AnimationConfig walkLeftConfig = new AnimationConfig(4, 1, 16, 16);
-        AnimationConfig walkRightConfig = new AnimationConfig(4, 1, 16, 16);
-        walkRightConfig.setStartY(1);
+        float linearDamping = 5f;
+        body.setLinearDamping(linearDamping);
+    }
+
+    private void createAnimations() {
+        AnimationConfig walkDownConfig = new AnimationConfig(4, 1, 16, 16);
+        AnimationConfig walkHorizontalConfig = new AnimationConfig(4, 1, 16, 16, 0, 1);
+        AnimationConfig walkUpConfig = new AnimationConfig(4, 1, 16, 16, 0, 2);
+
         animationManager.setTexture(ResourceManager.getInstance().getTexture("character.png"));
-        animationManager.createAnimation(walkLeftConfig, walkRight);
-        animationManager.createAnimation(walkRightConfig, walkLeft);
-        configStart();
+        animationManager.createAnimation(walkDownConfig, this.walkDown);
+        animationManager.createAnimation(walkHorizontalConfig, this.walkHorizontal);
+        animationManager.createAnimation(walkUpConfig, this.walkUp);
 
+    }
+
+    public void setMapSize(float width, float height) {
+        this.tileMapWidth = width;
+        this.tileMapHeight = height;
     }
 
     private void updateCameraPosition() {
         Camera camera = getStage().getCamera();
 
-        float actorCenterX = this.getX() + this.getWidth() / 2;
-        float actorCenterY = this.getY() + this.getHeight() / 2;
+        float actorCenterX = getX() + getWidth() / 2;
+        float actorCenterY = getY() + getHeight() / 2;
 
         float minX = camera.viewportWidth / 2;
         float maxX = toUnits(tileMapWidth) - (camera.viewportWidth / 2);
@@ -66,94 +89,129 @@ public final class Player extends Actor {
         camera.position.set(newCameraX, newCameraY, 0);
         camera.update();
     }
+
     private void limitActorPosition() {
         float minX = 0;
-        float maxX = toUnits(tileMapWidth) - this.getWidth();
+        float maxX = toUnits(tileMapWidth) - getWidth();
         float minY = 0;
-        float maxY = toUnits(tileMapHeight) - this.getHeight();
+        float maxY = toUnits(tileMapHeight) - getHeight();
 
-        float actorX = MathUtils.clamp(this.getX(), minX, maxX);
-        float actorY = MathUtils.clamp(this.getY(), minY, maxY);
+        float actorX = MathUtils.clamp(getX(), minX, maxX);
+        float actorY = MathUtils.clamp(getY(), minY, maxY);
 
-        this.setPosition(actorX, actorY);
+        setPosition(actorX, actorY);
     }
 
-
-
-
-    private void configStart() {
+    private void setupSize() {
         TextureRegion frame = animationManager.getFrame(animationManager.getCurrentAnimationKey());
-        this.setWidth(toUnits(frame.getRegionWidth()));
-        this.setHeight(toUnits(frame.getRegionHeight()));
+        setWidth(toUnits(frame.getRegionWidth()));
+        setHeight(toUnits(frame.getRegionHeight()));
+        setOrigin(Align.center);
+    }
 
+    private void updateInputStatus() {
+        right = (Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT));
+        left = (Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT));
+        up = (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP));
+        down = (Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN));
     }
 
     private void move(float delta) {
+        float speed = 400.0f;
         float velocity = speed * delta;
-        if (Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+
+        isMoving = (right || left || up || down);
+        if (!isMoving) return;
+
+        float diagonalVelocity = (float) (velocity / Math.sqrt(2.0));
+
+        if (right && up) {
+            moveBy(diagonalVelocity, diagonalVelocity);
+            updateAnimation(walkHorizontal);
+            animationManager.setFlip(true);
+        } else if (right && down) {
+            moveBy(diagonalVelocity, -diagonalVelocity);
+            updateAnimation(walkHorizontal);
+            animationManager.setFlip(true);
+        } else if (left && up) {
+            moveBy(-diagonalVelocity, diagonalVelocity);
+            updateAnimation(walkHorizontal);
+            animationManager.setFlip(false);
+        } else if (left && down) {
+            moveBy(-diagonalVelocity, -diagonalVelocity);
+            updateAnimation(walkHorizontal);
+            animationManager.setFlip(false);
+        } else if (right) {
             moveBy(velocity, 0);
-            isMove = true;
-            animationManager.setCurrentAnimationKey(walkLeft);
-            frame.setFlip(true, false);
-
-        } else if (Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            updateAnimation(walkHorizontal);
+            animationManager.setFlip(true);
+        } else if (left) {
             moveBy(-velocity, 0);
-            isMove = true;
-            animationManager.setCurrentAnimationKey(walkLeft);
-
-        } else if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            updateAnimation(walkHorizontal);
+            animationManager.setFlip(false);
+        } else if (up) {
             moveBy(0, velocity);
-            isMove = true;
-            animationManager.setCurrentAnimationKey(walkRight);
-
-
-        } else if (Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            moveBy(0, -velocity);
-            isMove = true;
-            animationManager.setCurrentAnimationKey(walkRight);
-
+            updateAnimation(walkUp);
         } else {
-            isMove = false;
+            moveBy(0, -velocity);
+            updateAnimation(walkDown);
         }
 
     }
 
     @Override
-    protected void sizeChanged() {
-        setOrigin(Align.center);
+    public void moveBy(float x, float y) {
+        body.applyForceToCenter(x, y, true);
     }
 
+    private void syncPosition(Vector2 position) {
+        setPosition(position.x - getOriginX(), position.y - getOriginY());
+    }
+
+    private void updateAnimation(String animationKey) {
+        String currentAnimation = animationManager.getCurrentAnimationKey();
+
+        if (Objects.equals(currentAnimation, animationKey)) {
+            return;
+        }
+        animationManager.setCurrentAnimationKey(animationKey);
+        if (Objects.equals(animationKey, walkHorizontal)) {
+            animationManager.setFlip(false);
+        } else if (Objects.equals(animationKey, walkDown)) {
+            animationManager.setFlip(true);
+        }
+    }
 
     @Override
     public void act(float delta) {
         super.act(delta);
-        if (isMove) {
+
+        if (isMoving) {
             animationManager.update(delta);
         }
-        frame.setTexture(animationManager.getFrame(animationManager.getCurrentAnimationKey()).getTexture());
-        frame.setRegion(animationManager.getFrame(animationManager.getCurrentAnimationKey()));
+
+
+        updateInputStatus();
         move(delta);
         limitActorPosition();
-        if (tileMapWidth != null && tileMapHeight != null) {
+
+        if (tileMapWidth != 0 && tileMapHeight != 0) {
             updateCameraPosition();
         }
-
+        syncPosition(body.getPosition());
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
+
         batch.draw(
-                frame,
+                animationManager.getFrame(animationManager.getCurrentAnimationKey()),
                 getX(), getY(),
                 getOriginX(), getOriginY(),
                 getWidth(), getHeight(),
                 getScaleX(), getScaleY(),
                 getRotation()
         );
-
-
     }
-
-
 }

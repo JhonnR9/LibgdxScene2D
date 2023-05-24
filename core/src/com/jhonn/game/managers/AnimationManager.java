@@ -2,6 +2,7 @@ package com.jhonn.game.managers;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.jhonn.game.configs.AnimationConfig;
 
@@ -11,6 +12,7 @@ import java.util.Map;
 public class AnimationManager {
     private final Map<String, Animation<TextureRegion>> animations = new HashMap<>();
     private Texture texture;
+    private Sprite sprite = new Sprite();
     private boolean isFlip;
     private float elapsedTime;
     private String currentAnimationKey;
@@ -58,8 +60,10 @@ public class AnimationManager {
      * @param animationName the string key of the animation.
      * @return the current texture region of the specified animation.
      */
-    public TextureRegion getFrame(String animationName) {
-        return animations.get(animationName).getKeyFrame(elapsedTime);
+    public Sprite getFrame(String animationName) {
+        sprite.setRegion(animations.get(animationName).getKeyFrame(elapsedTime));
+        sprite.setFlip(isFlip,false);
+        return sprite;
     }
 
     /**
@@ -105,5 +109,6 @@ public class AnimationManager {
 
     public void setTexture(Texture texture) {
         this.texture = texture;
+        sprite.setTexture(texture);
     }
 }

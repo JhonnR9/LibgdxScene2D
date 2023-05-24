@@ -3,10 +3,22 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "",
+    "activeFile": "main.tmx",
     "expandedProjectPaths": [
     ],
     "fileStates": {
+        "Tileset.tsx": {
+            "scaleInDock": 4,
+            "scaleInEditor": 1
+        },
+        "main.tmx": {
+            "scale": 3,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 517,
+                "y": 399.16666666666663
+            }
+        }
     },
     "last.imagePath": "C:/Users/jhone/OneDrive/Documentos/Libgdx/LibgdxScene2D/assets/graphics/Tileset",
     "map.height": 30,
@@ -15,9 +27,13 @@
     "map.tileWidth": 16,
     "map.width": 40,
     "openFiles": [
+        "main.tmx",
+        "Tileset.tsx"
     ],
     "project": "main-game.tiled-project",
     "recentFiles": [
+        "Tileset.tsx",
+        "main.tmx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {

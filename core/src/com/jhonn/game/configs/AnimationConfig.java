@@ -18,6 +18,14 @@ public class AnimationConfig {
         this.frameWidth = frameWidth;
         this.frameHeight = frameHeight;
     }
+    public AnimationConfig(int columns, int rows, int frameWidth, int frameHeight,int startX,int startY) {
+        this.columns = columns;
+        this.rows = rows;
+        this.frameWidth = frameWidth;
+        this.frameHeight = frameHeight;
+        this.startX = startX;
+        this.startY = startY;
+    }
 
     private boolean isLoop = true;
 
