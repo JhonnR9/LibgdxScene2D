@@ -2,73 +2,47 @@ package com.jhonn.game.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.jhonn.game.actors.Player;
-import com.jhonn.game.box2d.Box2dModel;
+import com.jhonn.game.actors.physical.box2d.Box2dModel;
 import com.jhonn.game.tilemap.TilemapHandle;
 
+import static com.jhonn.game.constants.GameConst.toUnits;
 
-public final class MainGame implements Screen {
-    private static final float WORLD_WIDTH = 6.4f;
-    private static final float WORLD_HEIGHT = 4.8f;
-    private final Stage stage = new Stage(new ExtendViewport(WORLD_WIDTH, WORLD_HEIGHT));
-    private final Box2dModel box2dModel = new Box2dModel();
 
+public final class MainGame extends BaseScreen {
+    private Player player;
+    private TilemapHandle tile;
 
     @Override
     public void show() {
+        super.show();
+        setBackgroundColor(Color.CLEAR);
 
-        stage.clear();
-
-
-        Player player = new Player(box2dModel.getWorld(),5,5);
-        TilemapHandle tilemapHandle = new TilemapHandle("RAW/main.tmx");
-
-        player.setMapSize(tilemapHandle.getWidth(), tilemapHandle.getHeight());
+        player = new Player(5, 1);
+        player.setColor(Color.BLUE);
+        tile = new TilemapHandle("RAW/main.tmx");
 
 
-
-        stage.addActor(tilemapHandle);
+        Stage stage = getStage();
         stage.addActor(player);
-        stage.addActor(box2dModel);
+        stage.addActor(tile);
 
+        createBodies();
 
-        stage.setDebugUnderMouse(true);
 
     }
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(.1f, .1f, .1f, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        stage.act();
-        stage.draw();
-    }
+        super.render(delta);
+        centerCameraActor(player, tile.getWidth(), tile.getHeight());
 
-    @Override
-    public void resize(int width, int height) {
-        stage.getViewport().update(width, height, true);
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void hide() {
-        Gdx.input.setInputProcessor(null);
-    }
-
-    @Override
-    public void dispose() {
-        stage.dispose();
     }
 }

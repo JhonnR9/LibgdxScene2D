@@ -11,7 +11,7 @@ public class DesktopLauncher {
 
 		config.useVsync(false);
 		config.setTitle("LibgdxScene2D");
-		config.setWindowedMode(640,480);
+		config.setWindowedMode(640,360);
 		new Lwjgl3Application(new Scene2D(), config);
 	}
 }

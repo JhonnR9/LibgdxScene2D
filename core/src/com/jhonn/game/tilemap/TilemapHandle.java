@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.tiled.*;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.utils.Align;
 import com.jhonn.game.constants.GameConst;
 
 public class TilemapHandle extends Actor {
@@ -14,6 +15,7 @@ public class TilemapHandle extends Actor {
 
     public TilemapHandle(String mapPath) {
         tiledMap = new TmxMapLoader().load(mapPath);
+        setOrigin(Align.center);
 
     }
 
@@ -33,7 +35,8 @@ public class TilemapHandle extends Actor {
 
             tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, unitScale);
         }
-        tiledMapRenderer.setView((OrthographicCamera) getStage().getCamera());
+        tiledMapRenderer.setView((OrthographicCamera) getStage().getViewport().getCamera());
+
         tiledMapRenderer.render();
     }
 
