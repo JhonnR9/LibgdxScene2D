@@ -34,22 +34,6 @@ public class BodyFactory {
         return body;
 
     }
-
-    public void configureBoxShape(Body body, BaseActor actor) {
-        Dimension actorSize = new Dimension(actor.getOriginX() * actor.getScaleX(), actor.getOriginY() * actor.getScaleY());
-        configureBoxShape(body, actorSize);
-    }
-
-    public void configureBoxShape(Body body, Dimension size) {
-        PolygonShape bodyShape = new PolygonShape();
-        try {
-            bodyShape.setAsBox(size.getWidth(), size.getHeight());
-            body.createFixture(bodyShape, 0.0f);
-        } finally {
-            bodyShape.dispose();
-        }
-    }
-
     @Null
     public Body createBox(World world, Rectangle rectangle) {
         BodyDef bodyDef = new BodyDef();
@@ -63,4 +47,20 @@ public class BodyFactory {
         return body;
 
     }
+
+    private void configureBoxShape(Body body, BaseActor actor) {
+        Dimension actorSize = new Dimension(actor.getOriginX() * actor.getScaleX(), actor.getOriginY() * actor.getScaleY());
+        configureBoxShape(body, actorSize);
+    }
+
+    private void configureBoxShape(Body body, Dimension size) {
+        PolygonShape bodyShape = new PolygonShape();
+        try {
+            bodyShape.setAsBox(size.getWidth(), size.getHeight());
+            body.createFixture(bodyShape, 0.0f);
+        } finally {
+            bodyShape.dispose();
+        }
+    }
+
 }
