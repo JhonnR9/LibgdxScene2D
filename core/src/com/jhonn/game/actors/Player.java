@@ -2,9 +2,14 @@ package com.jhonn.game.actors;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.jhonn.game.configs.AnimationConfig;
 import com.jhonn.game.managers.Animation;
 import com.jhonn.game.managers.ResourceManager;
+import com.jhonn.game.utils.CardinalPoint;
+import com.jhonn.game.utils.PhysicalModel;
+import com.jhonn.game.utils.TopDownMove;
 
 public final class Player extends BaseActor {
     private final Animation animation = new Animation();
@@ -14,9 +19,14 @@ public final class Player extends BaseActor {
     public Player(float x, float y) {
         setPosition(x, y);
         createAnimations();
-        getPhysicalModel().setStatic(false);
         setFrame(animation.getFrame());
-        getPhysicalModel().setLinearDamping(3f);
+
+        PhysicalModel physicalModel = getPhysicalModel();
+        physicalModel.setStatic(false);
+        physicalModel.setLinearDamping(3f);
+        physicalModel.setBodyUserDate(this);
+
+
     }
 
     private void createAnimations() {
@@ -57,6 +67,30 @@ public final class Player extends BaseActor {
 
     }
 
+    @Override
+    public void beginContact(Body bodyA, Body bodyB) {
+        if (bodyA.getUserData() == null || bodyB.getUserData() == null) return;
+
+        if (ClassReflection.isInstance(Player.class, bodyA.getUserData()) &&
+                ClassReflection.isInstance(Collectable.class, bodyB.getUserData())) {
+
+            Collectable collectable = (Collectable) bodyB.getUserData();
+            collectable.collect();
+
+        } else if (ClassReflection.isInstance(Collectable.class, bodyA.getUserData()) &&
+                ClassReflection.isInstance(Player.class, bodyB.getUserData())) {
+
+            Collectable collectable = (Collectable) bodyA.getUserData();
+            collectable.collect();
+
+        }
+    }
+
+    @Override
+    public void endContact(Body bodyA, Body bodyB) {
+
+    }
+
     private void changeAnimation() {
         CardinalPoint cardinalPoint = topDownMove.getCardinalPoint();
 
@@ -84,5 +118,4 @@ public final class Player extends BaseActor {
 
         }
     }
-
 }

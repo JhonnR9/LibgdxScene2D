@@ -45,6 +45,7 @@ public class ResourceManager implements AssetErrorListener {
         assetManager.load(defaultSkin, Skin.class);
         assetManager.load("badlogic.jpg", Texture.class, textureParams);
         assetManager.load("character.png", Texture.class, texturePixelParams);
+        assetManager.load("coletable.png", Texture.class, texturePixelParams);
 
         assetManager.finishLoading();
 

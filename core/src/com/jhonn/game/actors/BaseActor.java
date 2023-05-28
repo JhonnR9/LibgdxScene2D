@@ -6,24 +6,34 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Align;
+import com.jhonn.game.box2d.CollisionObserver;
+import com.jhonn.game.utils.PhysicalModel;
 
-import static com.jhonn.game.constants.GameConst.toUnits;
+import static com.jhonn.game.box2d.Box2dModel.toUnits;
 
-public class BaseActor extends Actor {
+/**
+ * class base for create actors
+ * yours actors can use physical
+ */
+public abstract class BaseActor extends Actor implements CollisionObserver {
+
     private Sprite frame;
 
     private final PhysicalModel physicalModel = new PhysicalModel();
 
-
+    /**
+     *
+     * @return PhysicalModel for define the body and other physical aspect
+     * @see PhysicalModel
+     */
     public PhysicalModel getPhysicalModel() {
         return physicalModel;
     }
 
 
-    public Sprite getFrame() {
-        return frame;
-    }
-
+    /**
+     * @param frame sprite for draw in stage
+     */
     public void setFrame(Sprite frame) {
         if (this.getWidth() == 0 || this.getHeight() == 0) {
             float width = toUnits(frame.getRegionWidth()) * getScaleX();
@@ -34,9 +44,6 @@ public class BaseActor extends Actor {
         this.frame = frame;
     }
 
-    private void boundaryEnforcement() {
-
-    }
 
     @Override
     public void act(float delta) {
@@ -60,7 +67,7 @@ public class BaseActor extends Actor {
     }
 
     private void attachBodyToActor() {
-        if (physicalModel.getBody() != null){
+        if (physicalModel.getBody() != null) {
             Body body = physicalModel.getBody();
             Vector2 position = body.getPosition();
             float rotation = (float) Math.toDegrees(body.getAngle());
@@ -70,4 +77,13 @@ public class BaseActor extends Actor {
 
         }
     }
+
+    /**
+     * use this for remove actor end body from world and stage
+     */
+    public void destroy(){
+        getPhysicalModel().setDestroyed(true);
+        this.remove();
+    }
+
 }

@@ -1,19 +1,16 @@
 package com.jhonn.game.screens;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Align;
+import com.jhonn.game.actors.Collectable;
 import com.jhonn.game.actors.Player;
-import com.jhonn.game.actors.physical.box2d.Box2dModel;
+import com.jhonn.game.managers.ResourceManager;
 import com.jhonn.game.tilemap.TilemapHandle;
 
-import static com.jhonn.game.constants.GameConst.toUnits;
 
 
 public final class MainGame extends BaseScreen {
@@ -25,16 +22,41 @@ public final class MainGame extends BaseScreen {
         super.show();
         setBackgroundColor(Color.CLEAR);
 
+        Collectable collectable = new Collectable(3, 5);
+        Collectable collectable1 = new Collectable(8, 6);
+        Collectable collectable2 = new Collectable(5, 8);
+
+
         player = new Player(5, 1);
         player.setColor(Color.BLUE);
         tile = new TilemapHandle("RAW/main.tmx");
 
 
         Stage stage = getStage();
-        stage.addActor(player);
         stage.addActor(tile);
+        stage.addActor(collectable);
+        stage.addActor(collectable1);
+        stage.addActor(collectable2);
+
+        stage.addActor(player);
 
         createBodies();
+        createTileColliders(tile);
+        addCollidersObservers();
+
+        Label label = new Label("000", ResourceManager.getInstance().getDefaultSkin());
+        Table table = new Table();
+        table.setDebug(true);
+        table.setFillParent(true);
+
+        table.top().right();
+        table.pad(10);
+        table.add(label);
+
+        Stage uiStage = getUiStage();
+        uiStage.addActor(table);
+
+
 
 
     }

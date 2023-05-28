@@ -1,16 +1,15 @@
-package com.jhonn.game.actors.physical.box2d;
+package com.jhonn.game.box2d;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Null;
 import com.jhonn.game.actors.BaseActor;
-import com.jhonn.game.actors.PhysicalModel;
 import com.jhonn.game.utils.Dimension;
+import com.jhonn.game.utils.PhysicalModel;
 
 
 public class BodyFactory {
-
     @Null
     public Body createBox(World world, BaseActor actor) {
 
@@ -30,21 +29,22 @@ public class BodyFactory {
         if (physicalModel.getLinearDamping() != null) {
             body.setLinearDamping(physicalModel.getLinearDamping());
         }
-
+        if (physicalModel.getBodyUserDate() != null){
+            body.setUserData(physicalModel.getBodyUserDate());
+        }
         return body;
 
     }
     @Null
-    public Body createBox(World world, Rectangle rectangle) {
+    public void createBox(World world, Rectangle rectangle) {
         BodyDef bodyDef = new BodyDef();
 
         bodyDef.type = BodyDef.BodyType.StaticBody;
         bodyDef.position.set(new Vector2(rectangle.x, rectangle.y));
 
+
         Body body = world.createBody(bodyDef);
         configureBoxShape(body, new Dimension(rectangle.width, rectangle.height));
-
-        return body;
 
     }
 

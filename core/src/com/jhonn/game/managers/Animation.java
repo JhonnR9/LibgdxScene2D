@@ -29,7 +29,6 @@ public class Animation {
      */
     public void setCurrentAnimation(String currentAnimationKey) {
         if (this.currentAnimationKey != currentAnimationKey){
-            elapsedTime = 0f;
             this.currentAnimationKey = currentAnimationKey;
         }
 

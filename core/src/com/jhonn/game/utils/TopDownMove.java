@@ -1,4 +1,4 @@
-package com.jhonn.game.actors;
+package com.jhonn.game.utils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;

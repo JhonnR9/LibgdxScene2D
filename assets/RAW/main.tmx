@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.1" orientation="orthogonal" renderorder="right-down" width="30" height="15" tilewidth="16" tileheight="16" infinite="0" nextlayerid="3" nextobjectid="1">
+<map version="1.10" tiledversion="1.10.1" orientation="orthogonal" renderorder="right-down" width="30" height="15" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="16">
  <tileset firstgid="1" source="tiles.tsx"/>
  <layer id="1" name="Tile Layer 1" width="30" height="15">
   <data encoding="csv">
@@ -20,4 +20,15 @@
 46,47,48,49,50,51,52,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,54
 </data>
  </layer>
+ <objectgroup id="3" name="colliders">
+  <object id="3" x="-32.6667" y="144.333"/>
+  <object id="4" x="-32.6667" y="144.333"/>
+  <object id="5" x="0.25" y="0.25" width="15.25" height="239.25"/>
+  <object id="6" x="15.6364" y="0.545455" width="463.606" height="31.6364"/>
+  <object id="7" x="464" y="32.7273" width="15.8182" height="175.091"/>
+  <object id="8" x="16" y="208.364" width="463.636" height="31.2727"/>
+  <object id="9" x="224" y="32.5455" width="15.6364" height="95.4545"/>
+  <object id="11" x="239.818" y="96" width="112.364" height="31.8182"/>
+  <object id="13" x="384" y="96.1818" width="79.8182" height="31.8182"/>
+ </objectgroup>
 </map>
