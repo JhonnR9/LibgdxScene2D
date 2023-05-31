@@ -5,12 +5,13 @@ import com.jhonn.game.managers.ResourceManager;
 import com.jhonn.game.screens.MainGame;
 
 public class Scene2D extends Game {
-
+	ResourceManager resourceManager = ResourceManager.getInstance();
 
 	@Override
 	public void create () {
-		ResourceManager.getInstance().setDefaultSkin("skin/cloud-form-ui.json");
-		ResourceManager.getInstance().loadResources();
+		resourceManager.setDefaultSkin("graphics/skin/cloud-form-ui.json");
+		resourceManager.setDefaultAtlas("graphics/textures/libgdx_scene2d.atlas");
+		resourceManager.loadResources();
 		setScreen(new MainGame());
 	}
 

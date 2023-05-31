@@ -1,0 +1,26 @@
+{
+    "activeFile": "C:/Users/jhone/OneDrive/Documentos/Libgdx/LibgdxScene2D/assets/graphics/Tiled/main.tmx",
+    "expandedProjectPaths": [
+    ],
+    "file.lastUsedOpenFilter": "All Files (*)",
+    "fileStates": {
+        "C:/Users/jhone/OneDrive/Documentos/Libgdx/LibgdxScene2D/assets/graphics/Tiled/main.tmx": {
+            "scale": 2.3472916666666666,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 239.4248690867134,
+                "y": 174.45637703026537
+            }
+        },
+        "C:/Users/jhone/OneDrive/Documentos/Libgdx/LibgdxScene2D/assets/graphics/Tiled/tiles.tsx": {
+            "scaleInDock": 1
+        }
+    },
+    "openFiles": [
+        "C:/Users/jhone/OneDrive/Documentos/Libgdx/LibgdxScene2D/assets/graphics/Tiled/main.tmx"
+    ],
+    "project": "LibgdxScene2D.tiled-project",
+    "recentFiles": [
+        "C:/Users/jhone/OneDrive/Documentos/Libgdx/LibgdxScene2D/assets/graphics/Tiled/main.tmx"
+    ]
+}

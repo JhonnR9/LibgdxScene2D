@@ -2,19 +2,20 @@ package com.jhonn.game.actors;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.World;
 import com.jhonn.game.managers.ResourceManager;
-import com.jhonn.game.utils.PhysicalModel;
+import com.jhonn.game.utils.enums.BodyShape;
 
 public class Collectable extends BaseActor {
     public Collectable(float x, float y) {
         setPosition(x, y);
-        Sprite sprite = new Sprite(ResourceManager.getInstance().getTexture("coletable.png"));
+        Sprite sprite = new Sprite(ResourceManager.getInstance().getDefaultAtlas().findRegion("coletable"));
         setFrame(sprite);
-        PhysicalModel physicalModel = getPhysicalModel();
+        setScale(.5f);
+
         physicalModel.setStatic(false);
         physicalModel.setLinearDamping(3f);
         physicalModel.setBodyUserDate(this);
+        physicalModel.setBodyShape(BodyShape.CIRCLE);
     }
 
     @Override
@@ -27,7 +28,10 @@ public class Collectable extends BaseActor {
 
     }
 
+
     public void collect() {
-        destroy();
+        remove();
+        setDestroyed(true);
+
     }
 }

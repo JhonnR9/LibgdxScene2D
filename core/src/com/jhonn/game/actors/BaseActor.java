@@ -7,7 +7,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Align;
 import com.jhonn.game.box2d.CollisionObserver;
-import com.jhonn.game.utils.PhysicalModel;
+import com.jhonn.game.models.PhysicalModel;
 
 import static com.jhonn.game.box2d.Box2dModel.toUnits;
 
@@ -19,17 +19,13 @@ public abstract class BaseActor extends Actor implements CollisionObserver {
 
     private Sprite frame;
 
-    private final PhysicalModel physicalModel = new PhysicalModel();
+    protected final PhysicalModel physicalModel = new PhysicalModel();
 
-    /**
-     *
-     * @return PhysicalModel for define the body and other physical aspect
-     * @see PhysicalModel
-     */
     public PhysicalModel getPhysicalModel() {
         return physicalModel;
     }
 
+    private boolean isDestroyed = false;
 
     /**
      * @param frame sprite for draw in stage
@@ -79,11 +75,13 @@ public abstract class BaseActor extends Actor implements CollisionObserver {
     }
 
     /**
-     * use this for remove actor end body from world and stage
+     * use this for remove actor end body from world and stage its will to do in next frame
      */
-    public void destroy(){
-        getPhysicalModel().setDestroyed(true);
-        this.remove();
+    public void setDestroyed(boolean isDestroyed){
+        this.isDestroyed = isDestroyed;
+    }
+    public  boolean isDestroyed(){
+        return isDestroyed;
     }
 
 }

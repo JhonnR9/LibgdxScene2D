@@ -1,16 +1,15 @@
 package com.jhonn.game.screens;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.jhonn.game.actors.Collectable;
 import com.jhonn.game.actors.Player;
 import com.jhonn.game.managers.ResourceManager;
-import com.jhonn.game.tilemap.TilemapHandle;
-
+import com.jhonn.game.actors.tilemap.TilemapHandle;
+import com.jhonn.game.utils.HexColor;
 
 
 public final class MainGame extends BaseScreen {
@@ -20,19 +19,16 @@ public final class MainGame extends BaseScreen {
     @Override
     public void show() {
         super.show();
-        setBackgroundColor(Color.CLEAR);
 
         Collectable collectable = new Collectable(3, 5);
         Collectable collectable1 = new Collectable(8, 6);
         Collectable collectable2 = new Collectable(5, 8);
 
 
-        player = new Player(5, 1);
+        player = new Player(5, 3);
         player.setColor(Color.BLUE);
-        tile = new TilemapHandle("RAW/main.tmx");
+        tile = new TilemapHandle("graphics/Tiled/main.tmx");
 
-
-        Stage stage = getStage();
         stage.addActor(tile);
         stage.addActor(collectable);
         stage.addActor(collectable1);
@@ -40,11 +36,19 @@ public final class MainGame extends BaseScreen {
 
         stage.addActor(player);
 
-        createBodies();
-        createTileColliders(tile);
+        box2dModel.createBodies(stage);
+        box2dModel.createTileColliders(tile);
+
         addCollidersObservers();
 
-        Label label = new Label("000", ResourceManager.getInstance().getDefaultSkin());
+        Skin skin = ResourceManager.getInstance().getDefaultSkin();
+        Drawable drawable = skin.getDrawable("background");
+
+        Label.LabelStyle labelStyle = new Label.LabelStyle(skin.getFont("font"), HexColor.create("000000"));
+        labelStyle.background = drawable;
+
+        Label label = new Label("Collected: 00", labelStyle);
+
         Table table = new Table();
         table.setDebug(true);
         table.setFillParent(true);
@@ -53,10 +57,9 @@ public final class MainGame extends BaseScreen {
         table.pad(10);
         table.add(label);
 
-        Stage uiStage = getUiStage();
         uiStage.addActor(table);
 
-
+        topDownCamera.setMapSize(tile.getWidth(), tile.getHeight());
 
 
     }
@@ -64,7 +67,7 @@ public final class MainGame extends BaseScreen {
     @Override
     public void render(float delta) {
         super.render(delta);
-        centerCameraActor(player, tile.getWidth(), tile.getHeight());
+        topDownCamera.centerToActorSmooth(player, 0.5f);
 
     }
 }

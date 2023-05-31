@@ -1,54 +1,53 @@
 package com.jhonn.game.actors;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
-import com.jhonn.game.configs.AnimationConfig;
-import com.jhonn.game.managers.Animation;
-import com.jhonn.game.managers.ResourceManager;
-import com.jhonn.game.utils.CardinalPoint;
-import com.jhonn.game.utils.PhysicalModel;
+import com.jhonn.game.models.AnimationModel;
+import com.jhonn.game.fatories.AnimationFactory;
+import com.jhonn.game.utils.enums.CardinalPoint;
 import com.jhonn.game.utils.TopDownMove;
 
 public final class Player extends BaseActor {
-    private final Animation animation = new Animation();
-    private static final String LEFT_RIGHT = "left", DOWN = "down", UP = "up";
+    private final AnimationFactory animationFactory = new AnimationFactory();
+    private static final String LEFT = "left", DOWN = "down", UP = "up", RIGHT = "right";
+    private static final String UP_LEFT = "up_left", UP_RIGHT = "up_right", DOWN_LEFT = "down_left", DOWN_RIGHT = "down_right";
     private final TopDownMove topDownMove = new TopDownMove(5);
 
     public Player(float x, float y) {
         setPosition(x, y);
         createAnimations();
-        setFrame(animation.getFrame());
+        setFrame(animationFactory.getFrame());
 
-        PhysicalModel physicalModel = getPhysicalModel();
         physicalModel.setStatic(false);
         physicalModel.setLinearDamping(3f);
         physicalModel.setBodyUserDate(this);
+        physicalModel.setWidth(1.2f);
+        physicalModel.setHeight(1.2f);
 
 
     }
 
     private void createAnimations() {
-        Texture character = ResourceManager.getInstance().getTexture("character.png");
-        animation.setTexture(character);
+        int frameSize = 32;
 
-        AnimationConfig downConfig = new AnimationConfig(
-                4, 1, 16, 16
-        );
-
-        AnimationConfig leftRightConfig = new AnimationConfig(
-                4, 1, 16, 16, 0, 1
-        );
-
-        AnimationConfig upConfig = new AnimationConfig(
-                4, 1, 16, 16, 0, 2
-        );
+        AnimationModel downConfig = new AnimationModel("character/down", 4, 1, frameSize, frameSize);
+        AnimationModel leftConfig = new AnimationModel("character/left", 4, 1, frameSize, frameSize);
+        AnimationModel rightConfig = new AnimationModel("character/right", 4, 1, frameSize, frameSize);
+        AnimationModel upConfig = new AnimationModel("character/up", 4, 1, frameSize, frameSize);
+        AnimationModel upLConfig = new AnimationModel("character/up_left", 4, 1, frameSize, frameSize);
+        AnimationModel upRConfig = new AnimationModel("character/up_right", 4, 1, frameSize, frameSize);
+        AnimationModel downLConfig = new AnimationModel("character/down_left", 4, 1, frameSize, frameSize);
+        AnimationModel downRConfig = new AnimationModel("character/down_right", 4, 1, frameSize, frameSize);
 
 
-        animation.create(downConfig, DOWN);
-        animation.create(leftRightConfig, LEFT_RIGHT);
-        animation.create(upConfig, UP);
+        animationFactory.create(downConfig, DOWN);
+        animationFactory.create(leftConfig, LEFT);
+        animationFactory.create(rightConfig, RIGHT);
+        animationFactory.create(upConfig, UP);
+        animationFactory.create(upLConfig, UP_LEFT);
+        animationFactory.create(upRConfig, UP_RIGHT);
+        animationFactory.create(downLConfig, DOWN_LEFT);
+        animationFactory.create(downRConfig, DOWN_RIGHT);
 
     }
 
@@ -56,14 +55,11 @@ public final class Player extends BaseActor {
     @Override
     public void act(float delta) {
         super.act(delta);
-        topDownMove.update(delta, getPhysicalModel().getBody());
-        Vector2 velocity = getPhysicalModel().getBody().getLinearVelocity();
-        if (velocity.isZero(.1f)) {
-            return;
-        }
-        changeAnimation();
-        animation.update(delta);
+        topDownMove.update(delta, physicalModel.getBody());
 
+        if (topDownMove.getCardinalPoint() == CardinalPoint.NULL) return;
+        changeAnimation();
+        animationFactory.update(delta);
 
     }
 
@@ -75,13 +71,13 @@ public final class Player extends BaseActor {
                 ClassReflection.isInstance(Collectable.class, bodyB.getUserData())) {
 
             Collectable collectable = (Collectable) bodyB.getUserData();
-            collectable.collect();
+           // collectable.collect();
 
         } else if (ClassReflection.isInstance(Collectable.class, bodyA.getUserData()) &&
                 ClassReflection.isInstance(Player.class, bodyB.getUserData())) {
 
             Collectable collectable = (Collectable) bodyA.getUserData();
-            collectable.collect();
+         //   collectable.collect();
 
         }
     }
@@ -93,28 +89,38 @@ public final class Player extends BaseActor {
 
     private void changeAnimation() {
         CardinalPoint cardinalPoint = topDownMove.getCardinalPoint();
-
+        System.out.println(cardinalPoint);
         if (cardinalPoint == CardinalPoint.NULL) return;
 
         switch (cardinalPoint) {
             case NORTH: {
-                animation.setCurrentAnimation(UP);
+                animationFactory.setCurrentAnimation(UP);
                 break;
             }
             case SOUTH: {
-                animation.setCurrentAnimation(DOWN);
+                animationFactory.setCurrentAnimation(DOWN);
                 break;
             }
             case WEST: {
-                animation.setCurrentAnimation(LEFT_RIGHT);
-                animation.setFlip(false);
+                animationFactory.setCurrentAnimation(LEFT);
                 break;
             }
             case EAST: {
-                animation.setCurrentAnimation(LEFT_RIGHT);
-                animation.setFlip(true);
+                animationFactory.setCurrentAnimation(RIGHT);
                 break;
             }
+            case NORTHEAST:
+                animationFactory.setCurrentAnimation(UP_RIGHT);
+                break;
+            case NORTHWEST:
+                animationFactory.setCurrentAnimation(UP_LEFT);
+                break;
+            case SOUTHEAST:
+                animationFactory.setCurrentAnimation(DOWN_RIGHT);
+                break;
+            case SOUTHWEST:
+                animationFactory.setCurrentAnimation(DOWN_LEFT);
+                break;
 
         }
     }

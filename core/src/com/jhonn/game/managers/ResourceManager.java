@@ -13,14 +13,21 @@ public class ResourceManager implements AssetErrorListener {
     private final AssetManager assetManager;
     private static final Logger log = new Logger(ResourceManager.class.getName(), Logger.DEBUG);
     private String defaultSkin;
+    private String defaultAtlas;
+
+    public void setDefaultAtlas(String defaultAtlas) {
+        this.defaultAtlas = defaultAtlas;
+    }
+
     private static ResourceManager instance;
 
     private ResourceManager() {
         assetManager = new AssetManager();
         assetManager.setErrorListener(this);
     }
-    public static ResourceManager getInstance(){
-        if (instance == null){
+
+    public static ResourceManager getInstance() {
+        if (instance == null) {
             instance = new ResourceManager();
         }
         return instance;
@@ -31,28 +38,26 @@ public class ResourceManager implements AssetErrorListener {
      * must be placed in the method implementation
      */
     public void loadResources() {
-        /**
-         * define texture parameters
-         */
-        TextureLoader.TextureParameter textureParams = new TextureLoader.TextureParameter();
-        textureParams.minFilter = Texture.TextureFilter.Linear;
-        textureParams.magFilter = Texture.TextureFilter.Linear;
-
-        TextureLoader.TextureParameter texturePixelParams = new TextureLoader.TextureParameter();
-        textureParams.minFilter = Texture.TextureFilter.Nearest;
-        textureParams.magFilter = Texture.TextureFilter.Nearest;
-
         assetManager.load(defaultSkin, Skin.class);
-        assetManager.load("badlogic.jpg", Texture.class, textureParams);
-        assetManager.load("character.png", Texture.class, texturePixelParams);
-        assetManager.load("coletable.png", Texture.class, texturePixelParams);
+        if (defaultAtlas != null){
+            assetManager.load(defaultAtlas, TextureAtlas.class);
+        }
 
         assetManager.finishLoading();
 
     }
 
     /**
-     *
+     * @return default atlas of the game and must be defined before with /setDefaultAtlas();
+     */
+    public TextureAtlas getDefaultAtlas() {
+        if (assetManager.isLoaded(defaultAtlas, TextureAtlas.class)) {
+            return assetManager.get(defaultAtlas, TextureAtlas.class);
+        } else {
+            throw new RuntimeException("Texture '" + defaultAtlas + "' not loaded.");
+        }
+    }
+    /**
      * @param path Path to the file with the extension for example "badlogic.jpg"
      * @return A reference to an instance of a Texture previously loaded with loadResources()
      */
@@ -69,10 +74,9 @@ public class ResourceManager implements AssetErrorListener {
     }
 
     /**
-     *
      * @return default skin of the game and must be defined before with /setDefaultSkin();
      */
-    public Skin getDefaultSkin(){
+    public Skin getDefaultSkin() {
         if (assetManager.isLoaded(defaultSkin, Skin.class)) {
             return assetManager.get(defaultSkin, Skin.class);
         } else {
@@ -81,7 +85,6 @@ public class ResourceManager implements AssetErrorListener {
     }
 
     /**
-     *
      * @param path Path to the file with the extension for example "graphics.atlas"
      * @return A reference to an instance of a TextureAtlas previously loaded with loadResources()
      */
@@ -94,7 +97,6 @@ public class ResourceManager implements AssetErrorListener {
     }
 
     /**
-     *
      * @return current load progress
      */
     public float getLoadingProgress() {
@@ -102,7 +104,6 @@ public class ResourceManager implements AssetErrorListener {
     }
 
     /**
-     *
      * @return true if it completed the load successfully
      */
     public boolean isLoadingComplete() {

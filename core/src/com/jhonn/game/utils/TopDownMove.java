@@ -1,8 +1,10 @@
 package com.jhonn.game.utils;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.jhonn.game.utils.enums.CardinalPoint;
+
+import static com.badlogic.gdx.Gdx.input;
 
 
 public class TopDownMove {
@@ -10,6 +12,8 @@ public class TopDownMove {
 
     public TopDownMove(float velocity) {
         this.velocity = velocity * 100;
+
+
     }
 
     private CardinalPoint cardinalPoint = CardinalPoint.NULL;
@@ -65,20 +69,24 @@ public class TopDownMove {
 
 
     public void update(float delta, Body body) {
-        updateInputStatus();
+        updateInputs();
         move(delta, body);
-
     }
 
     public CardinalPoint getCardinalPoint() {
         return cardinalPoint;
     }
 
-    private void updateInputStatus() {
-        boolean east = Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT);
-        boolean west = Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT);
-        boolean north = Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP);
-        boolean south = Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN);
+    private boolean isPressed(int key){
+        return input.isKeyPressed(key);
+    }
+
+    private void updateInputs() {
+
+        boolean east = isPressed(Input.Keys.D) || isPressed(Input.Keys.RIGHT);
+        boolean west = isPressed(Input.Keys.A) || isPressed(Input.Keys.LEFT);
+        boolean north = isPressed(Input.Keys.W) || isPressed(Input.Keys.UP);
+        boolean south = isPressed(Input.Keys.S) || isPressed(Input.Keys.DOWN);
 
         if (north && west) {
             cardinalPoint = CardinalPoint.NORTHWEST;

@@ -1,15 +1,17 @@
 package com.jhonn.game.box2d;
 
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.jhonn.game.actors.BaseActor;
+import com.jhonn.game.fatories.BodyFactory;
+import com.jhonn.game.actors.tilemap.TilemapHandle;
 
 
 public class Box2dModel implements Disposable {
@@ -19,7 +21,7 @@ public class Box2dModel implements Disposable {
     private static final int POSITION_ITERATIONS = 2;
     private static final float PPM = 16f;
     private final Box2DDebugRenderer box2DDebugRenderer = new Box2DDebugRenderer(
-            true, true, true, true, true, true
+            true, true, false, false, false, false
     );
     private final World world = new World(GRAVITY, true);
 
@@ -75,13 +77,52 @@ public class Box2dModel implements Disposable {
             if (body.getUserData() != null) {
                 if (ClassReflection.isAssignableFrom(BaseActor.class, body.getUserData().getClass())) {
                     BaseActor baseActor = (BaseActor) body.getUserData();
-                    if (baseActor.getPhysicalModel().isDestroyed()) {
+                    if (baseActor.isDestroyed()) {
                         world.destroyBody(body);
+
                     }
                 }
 
             }
         }
+    }
+
+    public void createTileColliders(TilemapHandle tile) {
+        BodyFactory bodyFactory = new BodyFactory();
+        if (tile.getRectanglesColliders() == null) return;
+
+        Array.ArrayIterator<Rectangle> rectangles = tile.getRectanglesColliders();
+        for (Rectangle rectangle : rectangles) {
+            bodyFactory.createBox(world, rectangle);
+        }
+    }
+
+    public void createBodies(Stage stage) {
+        Array.ArrayIterator<Actor> actors = new Array.ArrayIterator<>(stage.getActors());
+
+        Class<? extends Actor> baseActorClass = BaseActor.class;
+        Array<BaseActor> filteredActors = new Array<>();
+
+        for (Actor actor : actors) {
+            if (ClassReflection.isAssignableFrom(baseActorClass, actor.getClass())) {
+                BaseActor baseActor = (BaseActor) actor;
+                filteredActors.add(baseActor);
+            }
+
+        }
+
+        Array.ArrayIterator<BaseActor> filteredActorsI = new Array.ArrayIterator<>(filteredActors);
+
+        for (BaseActor actor : filteredActorsI) {
+            BodyFactory bodyFactory = new BodyFactory();
+            if (actor.getPhysicalModel().getIsStatic() != null) {
+                Body body = bodyFactory.createBox(world, actor);
+                actor.getPhysicalModel().setBody(body);
+            }
+
+        }
+
+
     }
 
 
