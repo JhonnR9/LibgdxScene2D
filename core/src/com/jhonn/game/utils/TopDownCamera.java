@@ -1,11 +1,10 @@
 package com.jhonn.game.utils;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
-import static com.jhonn.game.box2d.Box2dModel.toUnits;
+import static com.jhonn.game.box2d.Box2dWorld.toUnits;
 
 
 public class TopDownCamera extends OrthographicCamera {

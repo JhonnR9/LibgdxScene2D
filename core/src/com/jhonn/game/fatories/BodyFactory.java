@@ -13,14 +13,13 @@ import com.jhonn.game.models.PhysicalModel;
 public class BodyFactory {
     @Null
     public Body createBox(World world, BaseActor actor) {
-
         if (actor.getWidth() == 0) return null;
 
         PhysicalModel physicalModel = actor.getPhysicalModel();
 
         BodyDef bodyDef = new BodyDef();
 
-        bodyDef.type = physicalModel.getIsStatic() ? BodyDef.BodyType.StaticBody : BodyDef.BodyType.DynamicBody;
+        bodyDef.type = physicalModel.isStatic() ? BodyDef.BodyType.StaticBody : BodyDef.BodyType.DynamicBody;
 
         bodyDef.position.set(new Vector2(actor.getX() + actor.getOriginX(), actor.getY() + actor.getOriginY()));
 
@@ -47,17 +46,19 @@ public class BodyFactory {
 
 
         Body body = world.createBody(bodyDef);
-        configureBoxShape(body, new DimensionModel(rectangle.width, rectangle.height));
+        configureBoxShape(body, new Vector2(rectangle.width, rectangle.height));
 
     }
 
     private void configureBoxShape(Body body, BaseActor actor) {
+
         PhysicalModel physicalModel = actor.getPhysicalModel();
-        float width = physicalModel.getWidth() != 0 ? physicalModel.getWidth() * actor.getScaleX() :
-                actor.getOriginX() * actor.getScaleX();
-        float height = physicalModel.getHeight() != 0 ? physicalModel.getHeight() * actor.getScaleY() :
-                actor.getOriginY() * actor.getScaleY();
-        DimensionModel actorSize = new DimensionModel(width, height);
+        Vector2 size = physicalModel.getSize();
+
+        float width = size != null ? size.x * actor.getScaleX() : actor.getOriginX() * actor.getScaleX();
+        float height = size != null ? size.y * actor.getScaleY() : actor.getOriginY() * actor.getScaleY();
+
+        Vector2 actorSize = new Vector2(width, height);
 
         if (physicalModel.getBodyShape() == BodyShape.RECTANGLE) {
             configureBoxShape(body, actorSize);
@@ -68,10 +69,10 @@ public class BodyFactory {
 
     }
 
-    private void configureBoxShape(Body body, DimensionModel size) {
+    private void configureBoxShape(Body body, Vector2 size) {
         PolygonShape bodyShape = new PolygonShape();
         try {
-            bodyShape.setAsBox(size.getWidth(), size.getHeight());
+            bodyShape.setAsBox(size.x, size.y);
             body.createFixture(bodyShape, 0.0f);
         } finally {
             bodyShape.dispose();

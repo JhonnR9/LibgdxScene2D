@@ -14,7 +14,7 @@ import com.jhonn.game.fatories.BodyFactory;
 import com.jhonn.game.actors.tilemap.TilemapHandle;
 
 
-public class Box2dModel implements Disposable {
+public class Box2dWorld implements Disposable {
     private static final Vector2 GRAVITY = new Vector2(0, 0);
     private static final float TIME_STEP = 1 / 60f;
     private static final int VELOCITY_ITERATIONS = 6;
@@ -24,7 +24,6 @@ public class Box2dModel implements Disposable {
             true, true, false, false, false, false
     );
     private final World world = new World(GRAVITY, true);
-
     public Box2DContactListener getB2DContactListener() {
         return b2DContactListener;
     }
@@ -33,7 +32,7 @@ public class Box2dModel implements Disposable {
 
     private float accumulator = 0;
 
-    public Box2dModel() {
+    public Box2dWorld() {
         world.setContactListener(b2DContactListener);
     }
 
@@ -62,7 +61,6 @@ public class Box2dModel implements Disposable {
 
     }
 
-
     public void render(Matrix4 projMatrix) {
         box2DDebugRenderer.render(world, projMatrix);
     }
@@ -71,21 +69,27 @@ public class Box2dModel implements Disposable {
         Array<Body> bodies = new Array<>();
         world.getBodies(bodies);
 
+        Array<Body> bodiesToDestroy = new Array<>();
+
         Array.ArrayIterator<Body> bodyArrayIterator = new Array.ArrayIterator<>(bodies);
 
         for (Body body : bodyArrayIterator) {
-            if (body.getUserData() != null) {
-                if (ClassReflection.isAssignableFrom(BaseActor.class, body.getUserData().getClass())) {
-                    BaseActor baseActor = (BaseActor) body.getUserData();
-                    if (baseActor.isDestroyed()) {
-                        world.destroyBody(body);
-
-                    }
+            Object userData = body.getUserData();
+            if (userData != null && ClassReflection.isAssignableFrom(BaseActor.class, userData.getClass())) {
+                BaseActor baseActor = (BaseActor) userData;
+                if (baseActor.isDestroyed()) {
+                    b2DContactListener.removeObserver(baseActor);
+                    bodiesToDestroy.add(body);
                 }
-
             }
         }
+
+        Array.ArrayIterator<Body> bodyToDestroyArrayIterator = new Array.ArrayIterator<>(bodiesToDestroy);
+        for (Body body : bodyToDestroyArrayIterator) {
+            world.destroyBody(body);
+        }
     }
+
 
     public void createTileColliders(TilemapHandle tile) {
         BodyFactory bodyFactory = new BodyFactory();
@@ -100,11 +104,11 @@ public class Box2dModel implements Disposable {
     public void createBodies(Stage stage) {
         Array.ArrayIterator<Actor> actors = new Array.ArrayIterator<>(stage.getActors());
 
-        Class<? extends Actor> baseActorClass = BaseActor.class;
+        Class<? extends Actor> baseActorChild = BaseActor.class;
         Array<BaseActor> filteredActors = new Array<>();
 
         for (Actor actor : actors) {
-            if (ClassReflection.isAssignableFrom(baseActorClass, actor.getClass())) {
+            if (ClassReflection.isAssignableFrom(baseActorChild, actor.getClass())) {
                 BaseActor baseActor = (BaseActor) actor;
                 filteredActors.add(baseActor);
             }
@@ -112,13 +116,11 @@ public class Box2dModel implements Disposable {
         }
 
         Array.ArrayIterator<BaseActor> filteredActorsI = new Array.ArrayIterator<>(filteredActors);
+        BodyFactory bodyFactory = new BodyFactory();
 
         for (BaseActor actor : filteredActorsI) {
-            BodyFactory bodyFactory = new BodyFactory();
-            if (actor.getPhysicalModel().getIsStatic() != null) {
-                Body body = bodyFactory.createBox(world, actor);
-                actor.getPhysicalModel().setBody(body);
-            }
+            Body body = bodyFactory.createBox(world, actor);
+            actor.getPhysicalModel().setBody(body);
 
         }
 

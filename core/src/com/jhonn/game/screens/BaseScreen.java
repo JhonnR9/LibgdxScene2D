@@ -13,7 +13,7 @@ import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.jhonn.game.actors.BaseActor;
 
-import com.jhonn.game.box2d.Box2dModel;
+import com.jhonn.game.box2d.Box2dWorld;
 import com.jhonn.game.box2d.CollisionObserver;
 import com.jhonn.game.models.DimensionModel;
 import com.jhonn.game.utils.TopDownCamera;
@@ -25,7 +25,7 @@ public class BaseScreen implements Screen {
     private static final float UI_SCALE = 20.0f;
     protected final Stage stage;
     protected final Stage uiStage;
-    protected final Box2dModel box2dModel = new Box2dModel();
+    protected final Box2dWorld box2DWorld = new Box2dWorld();
     protected final TopDownCamera topDownCamera;
 
     public BaseScreen() {
@@ -51,12 +51,12 @@ public class BaseScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        box2dModel.update(delta);
+        box2DWorld.update(delta);
         stage.act();
         stage.draw();
         uiStage.act();
         uiStage.draw();
-        box2dModel.render(stage.getCamera().combined);
+        box2DWorld.render(stage.getCamera().combined);
     }
 
     @Override
@@ -81,7 +81,7 @@ public class BaseScreen implements Screen {
     @Override
     public void dispose() {
         stage.dispose();
-        box2dModel.dispose();
+        box2DWorld.dispose();
     }
 
     public void addCollidersObservers() {
@@ -92,10 +92,10 @@ public class BaseScreen implements Screen {
         for (Actor actor : actors) {
             if (ClassReflection.isAssignableFrom(baseActorClass, actor.getClass())) {
                 CollisionObserver collisionObserver = (CollisionObserver) actor;
-                collisionObservers.add(collisionObserver);
+                box2DWorld.getB2DContactListener().addObserver(collisionObserver);
             }
         }
-        box2dModel.getB2DContactListener().setObservers(collisionObservers);
+
     }
 
 

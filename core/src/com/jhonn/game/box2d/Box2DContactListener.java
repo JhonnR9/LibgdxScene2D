@@ -5,15 +5,18 @@ import com.badlogic.gdx.utils.Array;
 
 public class Box2DContactListener implements ContactListener {
 
-    private Array<CollisionObserver> observers;
+    private final Array<CollisionObserver> observers = new Array<>();
 
-    public void setObservers(Array<CollisionObserver> observers) {
-        this.observers = observers;
+    public void addObserver(CollisionObserver observer) {
+        observers.add(observer);
+    }
+    public void removeObserver(CollisionObserver observer){
+        observers.removeValue(observer,false);
     }
 
     @Override
     public void beginContact(Contact contact) {
-        if (observers == null) return;
+        if (observers.isEmpty()) return;
 
         Body bodyA = contact.getFixtureA().getBody();
         Body bodyB = contact.getFixtureB().getBody();
@@ -24,7 +27,7 @@ public class Box2DContactListener implements ContactListener {
 
     @Override
     public void endContact(Contact contact) {
-        if (observers == null) return;
+        if (observers.isEmpty()) return;
 
         Body bodyA = contact.getFixtureA().getBody();
         Body bodyB = contact.getFixtureB().getBody();

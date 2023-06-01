@@ -11,11 +11,15 @@ import com.jhonn.game.managers.ResourceManager;
 import com.jhonn.game.actors.tilemap.TilemapHandle;
 import com.jhonn.game.utils.HexColor;
 
+import static java.lang.String.*;
+
 
 public final class MainGame extends BaseScreen {
     private Player player;
     private TilemapHandle tile;
+    private Label label;
 
+    @SuppressWarnings("DefaultLocale")
     @Override
     public void show() {
         super.show();
@@ -24,10 +28,9 @@ public final class MainGame extends BaseScreen {
         Collectable collectable1 = new Collectable(8, 6);
         Collectable collectable2 = new Collectable(5, 8);
 
-
         player = new Player(5, 3);
         player.setColor(Color.BLUE);
-        tile = new TilemapHandle("graphics/Tiled/main.tmx");
+        tile = new TilemapHandle("graphics/tiled/main.tmx");
 
         stage.addActor(tile);
         stage.addActor(collectable);
@@ -36,8 +39,8 @@ public final class MainGame extends BaseScreen {
 
         stage.addActor(player);
 
-        box2dModel.createBodies(stage);
-        box2dModel.createTileColliders(tile);
+        box2DWorld.createBodies(stage);
+        box2DWorld.createTileColliders(tile);
 
         addCollidersObservers();
 
@@ -47,7 +50,8 @@ public final class MainGame extends BaseScreen {
         Label.LabelStyle labelStyle = new Label.LabelStyle(skin.getFont("font"), HexColor.create("000000"));
         labelStyle.background = drawable;
 
-        Label label = new Label("Collected: 00", labelStyle);
+
+        label = new Label(format("Collected: %02d", player.getLabelCollected()), labelStyle);
 
         Table table = new Table();
         table.setDebug(true);
@@ -64,9 +68,11 @@ public final class MainGame extends BaseScreen {
 
     }
 
+    @SuppressWarnings("DefaultLocale")
     @Override
     public void render(float delta) {
         super.render(delta);
+        label.setText(format("Collected: %03d", player.getLabelCollected()));
         topDownCamera.centerToActorSmooth(player, 0.5f);
 
     }

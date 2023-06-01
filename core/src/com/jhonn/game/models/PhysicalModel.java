@@ -1,97 +1,33 @@
 package com.jhonn.game.models;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.jhonn.game.actors.BaseActor;
 import com.jhonn.game.utils.enums.BodyShape;
+
+import java.awt.*;
 
 /**
  * class to define physical aspect in BaseActor material and constants like velocity damping and others
  *
  * @see com.jhonn.game.actors.BaseActor
  */
-public class PhysicalModel {
+public class PhysicalModel{
     private boolean isStatic = true;
     private Float linearDamping;
     private boolean isTrigger = false;
-    private float width, height;
+    private Vector2 size;
     private float density = .5f;
-
-    public float getDensity() {
-        return density;
-    }
-
-    public void setDensity(float density) {
-        this.density = density;
-    }
-
     private BodyShape bodyShape = BodyShape.RECTANGLE;
-
-    public BodyShape getBodyShape() {
-        return bodyShape;
-    }
-
-    public void setBodyShape(BodyShape bodyShape) {
-        this.bodyShape = bodyShape;
-    }
-
-    public float getWidth() {
-        return width;
-    }
-
-    public void setWidth(float width) {
-        this.width = width * .5f;
-    }
-
-    public float getHeight() {
-        return height;
-    }
-
-    public void setHeight(float height) {
-        this.height = height * .5f;
-    }
-
     private boolean isDestroyed = false;
-
-    public boolean isDestroyed() {
-        return isDestroyed;
-    }
-
-    public void setDestroyed(boolean destroyed) {
-        isDestroyed = destroyed;
-    }
-
     private BaseActor bodyUserDate;
-
-    public BaseActor getBodyUserDate() {
-        return bodyUserDate;
-    }
-
-    public void setBodyUserDate(BaseActor bodyUserDate) {
-        this.bodyUserDate = bodyUserDate;
-    }
-
-    /**
-     * @return it true if you want the body to respond like a trigger
-     */
-    public boolean isTrigger() {
-        return isTrigger;
-    }
-
-    /**
-     * @param trigger set it true if you want the body to respond like a trigger
-     */
-    public void setTrigger(boolean trigger) {
-        isTrigger = trigger;
-    }
-
     private Body body;
 
-
-    public Boolean getIsStatic() {
+    public boolean isStatic() {
         return isStatic;
     }
 
-    public void setStatic(Boolean aStatic) {
+    public void setStatic(boolean aStatic) {
         isStatic = aStatic;
     }
 
@@ -101,6 +37,54 @@ public class PhysicalModel {
 
     public void setLinearDamping(Float linearDamping) {
         this.linearDamping = linearDamping;
+    }
+
+    public boolean isTrigger() {
+        return isTrigger;
+    }
+
+    public void setTrigger(boolean trigger) {
+        isTrigger = trigger;
+    }
+
+    public Vector2 getSize() {
+        return size;
+    }
+
+    public void setSize(Vector2 size) {
+        this.size = size;
+    }
+
+    public float getDensity() {
+        return density;
+    }
+
+    public void setDensity(float density) {
+        this.density = density;
+    }
+
+    public BodyShape getBodyShape() {
+        return bodyShape;
+    }
+
+    public void setBodyShape(BodyShape bodyShape) {
+        this.bodyShape = bodyShape;
+    }
+
+    public boolean isDestroyed() {
+        return isDestroyed;
+    }
+
+    public void setDestroyed(boolean destroyed) {
+        isDestroyed = destroyed;
+    }
+
+    public BaseActor getBodyUserDate() {
+        return bodyUserDate;
+    }
+
+    public void setBodyUserDate(BaseActor bodyUserDate) {
+        this.bodyUserDate = bodyUserDate;
     }
 
     public Body getBody() {

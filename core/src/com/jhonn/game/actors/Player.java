@@ -1,5 +1,6 @@
 package com.jhonn.game.actors;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.jhonn.game.models.AnimationModel;
@@ -7,24 +8,36 @@ import com.jhonn.game.fatories.AnimationFactory;
 import com.jhonn.game.utils.enums.CardinalPoint;
 import com.jhonn.game.utils.TopDownMove;
 
+import java.awt.*;
+
 public final class Player extends BaseActor {
     private final AnimationFactory animationFactory = new AnimationFactory();
     private static final String LEFT = "left", DOWN = "down", UP = "up", RIGHT = "right";
     private static final String UP_LEFT = "up_left", UP_RIGHT = "up_right", DOWN_LEFT = "down_left", DOWN_RIGHT = "down_right";
     private final TopDownMove topDownMove = new TopDownMove(5);
+    private int labelCollected;
+
 
     public Player(float x, float y) {
+
         setPosition(x, y);
         createAnimations();
+
         setFrame(animationFactory.getFrame());
 
         physicalModel.setStatic(false);
         physicalModel.setLinearDamping(3f);
         physicalModel.setBodyUserDate(this);
-        physicalModel.setWidth(1.2f);
-        physicalModel.setHeight(1.2f);
+        physicalModel.setSize(new Vector2(.5f, .5f));
 
+    }
 
+    public int getLabelCollected() {
+        return labelCollected;
+    }
+
+    public void setLabelCollected(int labelCollected) {
+        this.labelCollected = labelCollected;
     }
 
     private void createAnimations() {
@@ -65,21 +78,7 @@ public final class Player extends BaseActor {
 
     @Override
     public void beginContact(Body bodyA, Body bodyB) {
-        if (bodyA.getUserData() == null || bodyB.getUserData() == null) return;
 
-        if (ClassReflection.isInstance(Player.class, bodyA.getUserData()) &&
-                ClassReflection.isInstance(Collectable.class, bodyB.getUserData())) {
-
-            Collectable collectable = (Collectable) bodyB.getUserData();
-           // collectable.collect();
-
-        } else if (ClassReflection.isInstance(Collectable.class, bodyA.getUserData()) &&
-                ClassReflection.isInstance(Player.class, bodyB.getUserData())) {
-
-            Collectable collectable = (Collectable) bodyA.getUserData();
-         //   collectable.collect();
-
-        }
     }
 
     @Override
@@ -89,7 +88,6 @@ public final class Player extends BaseActor {
 
     private void changeAnimation() {
         CardinalPoint cardinalPoint = topDownMove.getCardinalPoint();
-        System.out.println(cardinalPoint);
         if (cardinalPoint == CardinalPoint.NULL) return;
 
         switch (cardinalPoint) {

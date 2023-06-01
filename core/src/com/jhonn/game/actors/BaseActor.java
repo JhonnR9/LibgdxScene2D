@@ -9,7 +9,7 @@ import com.badlogic.gdx.utils.Align;
 import com.jhonn.game.box2d.CollisionObserver;
 import com.jhonn.game.models.PhysicalModel;
 
-import static com.jhonn.game.box2d.Box2dModel.toUnits;
+import static com.jhonn.game.box2d.Box2dWorld.toUnits;
 
 /**
  * class base for create actors

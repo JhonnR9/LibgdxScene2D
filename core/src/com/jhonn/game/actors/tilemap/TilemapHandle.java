@@ -15,7 +15,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 
-import static com.jhonn.game.box2d.Box2dModel.toUnits;
+import static com.jhonn.game.box2d.Box2dWorld.toUnits;
 
 
 public class TilemapHandle extends Actor {
