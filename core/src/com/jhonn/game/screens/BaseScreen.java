@@ -14,7 +14,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.jhonn.game.actors.BaseActor;
 
 import com.jhonn.game.box2d.Box2dWorld;
-import com.jhonn.game.box2d.CollisionObserver;
+import com.jhonn.game.utils.Interfaces.CollisionObserver;
 import com.jhonn.game.models.DimensionModel;
 import com.jhonn.game.utils.TopDownCamera;
 

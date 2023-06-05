@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Align;
-import com.jhonn.game.box2d.CollisionObserver;
+import com.jhonn.game.utils.Interfaces.CollisionObserver;
 import com.jhonn.game.models.PhysicalModel;
 
 import static com.jhonn.game.box2d.Box2dWorld.toUnits;

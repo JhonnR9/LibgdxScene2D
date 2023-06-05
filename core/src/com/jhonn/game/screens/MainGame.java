@@ -5,8 +5,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.jhonn.game.actors.Collectable;
 import com.jhonn.game.actors.Player;
+import com.jhonn.game.actors.items.Coins;
 import com.jhonn.game.managers.ResourceManager;
 import com.jhonn.game.actors.tilemap.TilemapHandle;
 import com.jhonn.game.utils.HexColor;
@@ -23,20 +23,14 @@ public final class MainGame extends BaseScreen {
     @Override
     public void show() {
         super.show();
-
-        Collectable collectable = new Collectable(3, 5);
-        Collectable collectable1 = new Collectable(8, 6);
-        Collectable collectable2 = new Collectable(5, 8);
+        Coins coins = new Coins(5,8);
 
         player = new Player(5, 3);
         player.setColor(Color.BLUE);
         tile = new TilemapHandle("graphics/tiled/main.tmx");
 
         stage.addActor(tile);
-        stage.addActor(collectable);
-        stage.addActor(collectable1);
-        stage.addActor(collectable2);
-
+        stage.addActor(coins);
         stage.addActor(player);
 
         box2DWorld.createBodies(stage);
