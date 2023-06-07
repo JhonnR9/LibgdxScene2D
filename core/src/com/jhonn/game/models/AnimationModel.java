@@ -8,7 +8,7 @@ public class AnimationModel {
     }
 
     private String textureRegion;
-    private float frameDuration = 1/8f;
+    private float frameDuration = 1 / 8f;
 
     public float getFrameDuration() {
         return frameDuration;
@@ -25,6 +25,7 @@ public class AnimationModel {
         this.frameWidth = frameWidth;
         this.frameHeight = frameHeight;
     }
+
     public AnimationModel(String textureRegion, int columns, int rows, int frameWidth, int frameHeight, int startX, int startY) {
         this.textureRegion = textureRegion;
         this.columns = columns;

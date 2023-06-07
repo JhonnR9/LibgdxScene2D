@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.jhonn.game.actors.BaseActor;
+import com.jhonn.game.actors.items.BaseItem;
 import com.jhonn.game.fatories.BodyFactory;
 import com.jhonn.game.actors.tilemap.TilemapHandle;
 
@@ -24,6 +25,7 @@ public class Box2dWorld implements Disposable {
             true, true, false, false, false, false
     );
     private final World world = new World(GRAVITY, true);
+
     public Box2DContactListener getB2DContactListener() {
         return b2DContactListener;
     }
@@ -80,12 +82,15 @@ public class Box2dWorld implements Disposable {
                 if (baseActor.isDestroyed()) {
                     b2DContactListener.removeObserver(baseActor);
                     bodiesToDestroy.add(body);
+                    break;
                 }
             }
         }
 
         Array.ArrayIterator<Body> bodyToDestroyArrayIterator = new Array.ArrayIterator<>(bodiesToDestroy);
         for (Body body : bodyToDestroyArrayIterator) {
+            BaseItem item = (BaseItem) body.getUserData();
+            item.remove();
             world.destroyBody(body);
         }
     }
@@ -101,31 +106,7 @@ public class Box2dWorld implements Disposable {
         }
     }
 
-    public void createBodies(Stage stage) {
-        Array.ArrayIterator<Actor> actors = new Array.ArrayIterator<>(stage.getActors());
 
-        Class<? extends Actor> baseActorChild = BaseActor.class;
-        Array<BaseActor> filteredActors = new Array<>();
-
-        for (Actor actor : actors) {
-            if (ClassReflection.isAssignableFrom(baseActorChild, actor.getClass())) {
-                BaseActor baseActor = (BaseActor) actor;
-                filteredActors.add(baseActor);
-            }
-
-        }
-
-        Array.ArrayIterator<BaseActor> filteredActorsI = new Array.ArrayIterator<>(filteredActors);
-        BodyFactory bodyFactory = new BodyFactory();
-
-        for (BaseActor actor : filteredActorsI) {
-            Body body = bodyFactory.createBox(world, actor);
-            actor.getPhysicalModel().setBody(body);
-
-        }
-
-
-    }
 
 
     @Override

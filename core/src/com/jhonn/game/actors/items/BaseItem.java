@@ -8,16 +8,21 @@ import com.jhonn.game.actors.Player;
 
 public abstract class BaseItem extends BaseActor {
     protected final int id;
-    public BaseItem(float x, float y, int id,String name) {
+
+    public BaseItem(float x, float y, int id, String name) {
         this.id = id;
         this.setName(name);
         setPosition(x, y);
 
-        physicalModel.setStatic(true);
+        physicalModel.setStatic(false);
         physicalModel.setBodyUserDate(this);
+        physicalModel.setTrigger(true);
 
     }
 
+    public int getId() {
+        return id;
+    }
 
     @Override
     public void beginContact(Body bodyA, Body bodyB) {
@@ -27,21 +32,20 @@ public abstract class BaseItem extends BaseActor {
                 ClassReflection.isInstance(BaseItem.class, bodyB.getUserData())) {
 
             BaseItem baseItem = (BaseItem) bodyB.getUserData();
-            if (baseItem == this){
+            if (baseItem == this) {
                 Player player = (Player) bodyA.getUserData();
-                baseItem.collect(player);
+                BaseItem item = (BaseItem) bodyB.getUserData();
+                baseItem.collect(player, item);
             }
-
 
         } else if (ClassReflection.isInstance(BaseItem.class, bodyA.getUserData()) &&
                 ClassReflection.isInstance(Player.class, bodyB.getUserData())) {
             BaseItem baseItem = (BaseItem) bodyA.getUserData();
-            if (baseItem == this){
+            if (baseItem == this) {
                 Player player = (Player) bodyB.getUserData();
-                baseItem.collect(player);
+                BaseItem item = (BaseItem) bodyA.getUserData();
+                baseItem.collect(player, item);
             }
-
-
         }
     }
 
@@ -50,11 +54,11 @@ public abstract class BaseItem extends BaseActor {
 
     }
 
-
-    protected void collect(Player player) {
-        remove();
-        player.setLabelCollected(player.getLabelCollected() + 1);
+    protected void collect(Player player, BaseItem item) {
+        player.getInventory().addItem(item, player.getInventory().getItemQuantity(item.id) + 1);
         setDestroyed(true);
+        setVisible(false);
 
     }
+
 }

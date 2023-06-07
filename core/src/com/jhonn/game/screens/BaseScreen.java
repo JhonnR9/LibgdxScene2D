@@ -1,6 +1,7 @@
 package com.jhonn.game.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 
@@ -11,6 +12,8 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.jhonn.game.GameStage;
+import com.jhonn.game.InputListener;
 import com.jhonn.game.actors.BaseActor;
 
 import com.jhonn.game.box2d.Box2dWorld;
@@ -22,26 +25,36 @@ import com.jhonn.game.utils.TopDownCamera;
 public class BaseScreen implements Screen {
     private static final float VIEWPORT_WIDTH = 16.0f;
     private static final float VIEWPORT_HEIGHT = 9.0f;
-    private static final float UI_SCALE = 20.0f;
-    protected final Stage stage;
-    protected final Stage uiStage;
+    private static final float UI_SCALE = 30.0f;
+    protected final GameStage stage;
+    protected final GameStage uiStage;
     protected final Box2dWorld box2DWorld = new Box2dWorld();
     protected final TopDownCamera topDownCamera;
+    private final InputMultiplexer inputMultiplexer;
+    protected final InputListener inputListener;
 
     public BaseScreen() {
         topDownCamera = new TopDownCamera();
-        stage = new Stage(new ExtendViewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT, topDownCamera));
+        stage = new GameStage(new ExtendViewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT, topDownCamera), box2DWorld.getWorld());
 
         //setup uiStage
         DimensionModel uiViewportSize = getUiViewportSize();
         Viewport uiViewport = new FillViewport(uiViewportSize.getWidth(), uiViewportSize.getHeight());
-        uiStage = new Stage(uiViewport);
+        uiStage = new GameStage(uiViewport);
+        inputMultiplexer = new InputMultiplexer();
+        inputListener = new InputListener();
     }
 
     @Override
     public void show() {
         stage.clear();
         uiStage.clear();
+
+        Gdx.input.setInputProcessor(inputMultiplexer);
+        inputMultiplexer.addProcessor(stage);
+        inputMultiplexer.addProcessor(uiStage);
+        inputMultiplexer.addProcessor(inputListener);
+
 
 
     }
@@ -62,6 +75,7 @@ public class BaseScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
+        uiStage.getViewport().update(width,height,true);
     }
 
     @Override

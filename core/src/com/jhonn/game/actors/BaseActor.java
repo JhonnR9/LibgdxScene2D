@@ -16,9 +16,7 @@ import static com.jhonn.game.box2d.Box2dWorld.toUnits;
  * yours actors can use physical
  */
 public abstract class BaseActor extends Actor implements CollisionObserver {
-
     private Sprite frame;
-
     protected final PhysicalModel physicalModel = new PhysicalModel();
 
     public PhysicalModel getPhysicalModel() {
@@ -48,6 +46,7 @@ public abstract class BaseActor extends Actor implements CollisionObserver {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
+        if (!isVisible()) return;
         if (frame == null) return;
         if (getColor() != null) {
             frame.setColor(getColor());
@@ -77,10 +76,11 @@ public abstract class BaseActor extends Actor implements CollisionObserver {
     /**
      * use this for remove actor end body from world and stage its will to do in next frame
      */
-    public void setDestroyed(boolean isDestroyed){
+    public void setDestroyed(boolean isDestroyed) {
         this.isDestroyed = isDestroyed;
     }
-    public  boolean isDestroyed(){
+
+    public boolean isDestroyed() {
         return isDestroyed;
     }
 

@@ -11,11 +11,15 @@ import com.jhonn.game.models.PhysicalModel;
 
 
 public class BodyFactory {
+    private PhysicalModel physicalModel;
+
     @Null
     public Body createBox(World world, BaseActor actor) {
-        if (actor.getWidth() == 0) return null;
+        if (actor.getWidth() == 0) {
+            return null;
+        }
 
-        PhysicalModel physicalModel = actor.getPhysicalModel();
+        physicalModel = actor.getPhysicalModel();
 
         BodyDef bodyDef = new BodyDef();
 
@@ -33,6 +37,7 @@ public class BodyFactory {
         if (physicalModel.getBodyUserDate() != null) {
             body.setUserData(physicalModel.getBodyUserDate());
         }
+
         return body;
 
     }
@@ -67,23 +72,41 @@ public class BodyFactory {
             configureCircleShape(body, radius);
         }
 
+
     }
 
     private void configureBoxShape(Body body, Vector2 size) {
+        FixtureDef fixtureDef = new FixtureDef();
         PolygonShape bodyShape = new PolygonShape();
+
+        if (physicalModel != null && physicalModel.isTrigger()) {
+            fixtureDef.shape = bodyShape;
+            fixtureDef.isSensor = true;
+
+        }
         try {
             bodyShape.setAsBox(size.x, size.y);
-            body.createFixture(bodyShape, 0.0f);
+            fixtureDef.shape = bodyShape;
+            body.createFixture(fixtureDef);
         } finally {
             bodyShape.dispose();
         }
+
     }
 
     private void configureCircleShape(Body body, float radius) {
+        FixtureDef fixtureDef = new FixtureDef();
         CircleShape bodyShape = new CircleShape();
+
+        if (physicalModel != null && physicalModel.isTrigger()) {
+            fixtureDef.shape = bodyShape;
+            fixtureDef.isSensor = true;
+
+        }
         try {
             bodyShape.setRadius(radius);
-            body.createFixture(bodyShape, 0.0f);
+            fixtureDef.shape = bodyShape;
+            body.createFixture(fixtureDef);
         } finally {
             bodyShape.dispose();
         }

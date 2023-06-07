@@ -14,9 +14,4 @@ public class Coins extends BaseItem {
         physicalModel.setBodyShape(BodyShape.CIRCLE);
     }
 
-    @Override
-    protected void collect(Player player) {
-        super.collect(player);
-        System.out.println("colected");
-    }
 }

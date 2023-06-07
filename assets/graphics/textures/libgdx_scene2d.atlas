@@ -1,75 +1,89 @@
 
 libgdx_scene2d.png
-size: 512, 128
+size: 512, 512
 format: RGBA8888
 filter: Nearest, Nearest
 repeat: none
 character/down
   rotate: false
-  xy: 132, 54
+  xy: 132, 70
   size: 128, 32
   orig: 128, 32
   offset: 0, 0
   index: -1
 character/down_left
   rotate: false
-  xy: 132, 20
+  xy: 2, 2
   size: 128, 32
   orig: 128, 32
   offset: 0, 0
   index: -1
 character/down_right
   rotate: false
-  xy: 2, 88
+  xy: 2, 104
   size: 128, 32
   orig: 128, 32
   offset: 0, 0
   index: -1
 character/left
   rotate: false
-  xy: 2, 54
+  xy: 2, 70
   size: 128, 32
   orig: 128, 32
   offset: 0, 0
   index: -1
 character/old
   rotate: false
-  xy: 392, 72
+  xy: 262, 54
   size: 64, 48
   orig: 64, 48
   offset: 0, 0
   index: -1
 character/right
   rotate: false
-  xy: 132, 88
+  xy: 132, 104
   size: 128, 32
   orig: 128, 32
   offset: 0, 0
   index: -1
 character/up
   rotate: false
-  xy: 262, 88
+  xy: 262, 104
   size: 128, 32
   orig: 128, 32
   offset: 0, 0
   index: -1
 character/up_left
   rotate: false
-  xy: 2, 20
+  xy: 2, 36
   size: 128, 32
   orig: 128, 32
   offset: 0, 0
   index: -1
 character/up_right
   rotate: false
-  xy: 262, 54
+  xy: 132, 36
   size: 128, 32
   orig: 128, 32
   offset: 0, 0
   index: -1
 coletable
   rotate: false
-  xy: 2, 2
+  xy: 484, 378
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+inventory_big
+  rotate: false
+  xy: 2, 138
+  size: 480, 256
+  orig: 480, 256
+  offset: 0, 0
+  index: -1
+potion
+  rotate: false
+  xy: 392, 120
   size: 16, 16
   orig: 16, 16
   offset: 0, 0

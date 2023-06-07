@@ -1,14 +1,13 @@
-<style>
-
-    body {
-
-        font-size: 48px;
-        border: 2px solid ;
-        margin:20px;
-        padding:40px;
-   }
-
-</style>
+<div>
+    <style>
+        body {
+            font-size: 48px;
+            border: 2px solid ;
+            margin:20px;
+            padding:40px;
+        }
+    </style>
+</div>
 
 # Libgdx Scene 2D
 
@@ -48,5 +47,10 @@ This is a game project using **Libgdx and Scene2D** in *top dawn style*.
                 Car car = new Car();
 
 3. Close the file. <a href="https://libgdx.com/" target="_blank">Libgdx web site.</a>
-
+<table>
+    <tr>
+        <td>Tes</td>
+        <td>Test</td>
+    </tr>
+</table>
 

@@ -3,6 +3,7 @@ package com.jhonn.game.actors;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.jhonn.game.managers.InventoryManager;
 import com.jhonn.game.models.AnimationModel;
 import com.jhonn.game.fatories.AnimationFactory;
 import com.jhonn.game.utils.enums.CardinalPoint;
@@ -15,11 +16,10 @@ public final class Player extends BaseActor {
     private static final String LEFT = "left", DOWN = "down", UP = "up", RIGHT = "right";
     private static final String UP_LEFT = "up_left", UP_RIGHT = "up_right", DOWN_LEFT = "down_left", DOWN_RIGHT = "down_right";
     private final TopDownMove topDownMove = new TopDownMove(5);
-    private int labelCollected;
+    private final InventoryManager inventory = new InventoryManager();
 
 
     public Player(float x, float y) {
-
         setPosition(x, y);
         createAnimations();
 
@@ -32,12 +32,8 @@ public final class Player extends BaseActor {
 
     }
 
-    public int getLabelCollected() {
-        return labelCollected;
-    }
-
-    public void setLabelCollected(int labelCollected) {
-        this.labelCollected = labelCollected;
+    public InventoryManager getInventory(){
+        return inventory;
     }
 
     private void createAnimations() {
