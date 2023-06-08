@@ -33,18 +33,19 @@ public final class MainGame extends BaseScreen {
         super.show();
 
         player = new Player(5, 3);
-        player.setColor(Color.BLUE);
+        stage.addActor(player);
+
         tile = new TilemapHandle("graphics/tiled/main.tmx");
 
         stage.addActor(tile);
 
-        int quantity = 20;
+        int quantity = 5;
         for (int i = 0; i < quantity; i++) {
             Vector2 position = getRandomPosition((int) toUnits(tile.getWidth() - 1), (int) toUnits(tile.getHeight() - 1));
             Coins coins = new Coins(position.x, position.y);
             stage.addActor(coins);
         }
-        int quantityP = 20;
+        int quantityP = 5;
         for (int i = 0; i < quantityP; i++) {
             Vector2 position = getRandomPosition((int) toUnits(tile.getWidth() - 1), (int) toUnits(tile.getHeight() - 1));
             Potion p = new Potion(position.x, position.y);
@@ -52,11 +53,7 @@ public final class MainGame extends BaseScreen {
         }
 
 
-        stage.addActor(player);
-
         box2DWorld.createTileColliders(tile);
-
-        addCollidersObservers();
 
         Skin skin = ResourceManager.getInstance().getDefaultSkin();
         Drawable drawable = skin.getDrawable("background");

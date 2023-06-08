@@ -1,5 +1,6 @@
 package com.jhonn.game.actors.items;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.jhonn.game.actors.BaseActor;

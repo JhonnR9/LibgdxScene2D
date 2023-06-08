@@ -1,38 +1,44 @@
 package com.jhonn.game.actors;
 
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.ColorAction;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.jhonn.game.managers.InventoryManager;
 import com.jhonn.game.models.AnimationModel;
 import com.jhonn.game.fatories.AnimationFactory;
+import com.jhonn.game.utils.Interfaces.input.KeyboardListener;
 import com.jhonn.game.utils.enums.CardinalPoint;
 import com.jhonn.game.utils.TopDownMove;
 
 import java.awt.*;
 
-public final class Player extends BaseActor {
+public final class Player extends BaseActor implements KeyboardListener {
     private final AnimationFactory animationFactory = new AnimationFactory();
-    private static final String LEFT = "left", DOWN = "down", UP = "up", RIGHT = "right";
-    private static final String UP_LEFT = "up_left", UP_RIGHT = "up_right", DOWN_LEFT = "down_left", DOWN_RIGHT = "down_right";
     private final TopDownMove topDownMove = new TopDownMove(5);
     private final InventoryManager inventory = new InventoryManager();
 
+    private final ColorAction restoreColorAction = Actions.color(getColor(), 0.1f);
+    private final ColorAction hitColorAction = Actions.color(Color.RED, 0.1f);
+
+    private enum Animations {
+        DOWN, LEFT, RIGHT, UP, DOWN_LEFT, DOWN_RIGHT, UP_LEFT, UP_RIGHT
+    }
 
     public Player(float x, float y) {
         setPosition(x, y);
         createAnimations();
-
         setFrame(animationFactory.getFrame());
-
         physicalModel.setStatic(false);
         physicalModel.setLinearDamping(3f);
         physicalModel.setBodyUserDate(this);
         physicalModel.setSize(new Vector2(.5f, .5f));
-
     }
 
-    public InventoryManager getInventory(){
+    public InventoryManager getInventory() {
         return inventory;
     }
 
@@ -49,26 +55,34 @@ public final class Player extends BaseActor {
         AnimationModel downRConfig = new AnimationModel("character/down_right", 4, 1, frameSize, frameSize);
 
 
-        animationFactory.create(downConfig, DOWN);
-        animationFactory.create(leftConfig, LEFT);
-        animationFactory.create(rightConfig, RIGHT);
-        animationFactory.create(upConfig, UP);
-        animationFactory.create(upLConfig, UP_LEFT);
-        animationFactory.create(upRConfig, UP_RIGHT);
-        animationFactory.create(downLConfig, DOWN_LEFT);
-        animationFactory.create(downRConfig, DOWN_RIGHT);
+        animationFactory.create(downConfig, Animations.DOWN);
+        animationFactory.create(leftConfig, Animations.LEFT);
+        animationFactory.create(rightConfig, Animations.RIGHT);
+        animationFactory.create(upConfig, Animations.UP);
+        animationFactory.create(upLConfig, Animations.UP_LEFT);
+        animationFactory.create(upRConfig, Animations.UP_RIGHT);
+        animationFactory.create(downLConfig, Animations.DOWN_LEFT);
+        animationFactory.create(downRConfig, Animations.DOWN_RIGHT);
+
 
     }
+
+    private void hitDamage() {
+        addAction(Actions.sequence(hitColorAction, restoreColorAction));
+    }
+
 
 
     @Override
     public void act(float delta) {
         super.act(delta);
-        topDownMove.update(delta, physicalModel.getBody());
+        topDownMove.update(delta, getBody());
 
         if (topDownMove.getCardinalPoint() == CardinalPoint.NULL) return;
         changeAnimation();
         animationFactory.update(delta);
+
+        setFrame(animationFactory.getFrame());
 
     }
 
@@ -88,34 +102,52 @@ public final class Player extends BaseActor {
 
         switch (cardinalPoint) {
             case NORTH: {
-                animationFactory.setCurrentAnimation(UP);
+                animationFactory.setCurrentAnimation(Animations.UP);
                 break;
             }
             case SOUTH: {
-                animationFactory.setCurrentAnimation(DOWN);
+                animationFactory.setCurrentAnimation(Animations.DOWN);
                 break;
             }
             case WEST: {
-                animationFactory.setCurrentAnimation(LEFT);
+                animationFactory.setCurrentAnimation(Animations.LEFT);
                 break;
             }
             case EAST: {
-                animationFactory.setCurrentAnimation(RIGHT);
+                animationFactory.setCurrentAnimation(Animations.RIGHT);
                 break;
             }
             case NORTHEAST:
-                animationFactory.setCurrentAnimation(UP_RIGHT);
+                animationFactory.setCurrentAnimation(Animations.UP_RIGHT);
                 break;
             case NORTHWEST:
-                animationFactory.setCurrentAnimation(UP_LEFT);
+                animationFactory.setCurrentAnimation(Animations.UP_LEFT);
                 break;
             case SOUTHEAST:
-                animationFactory.setCurrentAnimation(DOWN_RIGHT);
+                animationFactory.setCurrentAnimation(Animations.DOWN_RIGHT);
                 break;
             case SOUTHWEST:
-                animationFactory.setCurrentAnimation(DOWN_LEFT);
+                animationFactory.setCurrentAnimation(Animations.DOWN_LEFT);
                 break;
 
         }
+    }
+
+    @Override
+    public boolean keyDown(int keycode) {
+        if (keycode == Input.Keys.E) {
+            hitDamage();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyTyped(char character) {
+        return false;
     }
 }

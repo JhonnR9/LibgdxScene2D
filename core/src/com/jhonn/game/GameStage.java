@@ -5,12 +5,15 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.jhonn.game.actors.BaseActor;
+import com.jhonn.game.box2d.Box2dWorld;
 import com.jhonn.game.fatories.BodyFactory;
+import com.jhonn.game.utils.Interfaces.CollisionObserver;
 import com.jhonn.game.utils.Interfaces.input.KeyboardListener;
 import com.jhonn.game.utils.Interfaces.input.TouchListener;
 
@@ -18,15 +21,15 @@ import com.jhonn.game.utils.Interfaces.input.TouchListener;
 public class GameStage extends Stage {
     private final InputListener inputListener = new InputListener();
     private final BodyFactory bodyFactory = new BodyFactory();
-    private World world;
+    private Box2dWorld box2DWorld;
 
     public GameStage(Viewport viewport) {
         setViewport(viewport);
 
     }
 
-    public GameStage(Viewport viewport, World world) {
-        this.world = world;
+    public GameStage(Viewport viewport, Box2dWorld box2DWorld) {
+        this.box2DWorld = box2DWorld;
         setViewport(viewport);
 
     }
@@ -43,9 +46,11 @@ public class GameStage extends Stage {
         if (actor instanceof BaseActor) {
             BaseActor baseActor = (BaseActor) actor;
             createBody(baseActor);
+            box2DWorld.getB2DContactListener().addObserver(baseActor);
         }
         super.addActor(actor);
     }
+
 
     @Override
     public boolean keyDown(int keycode) {
@@ -111,11 +116,11 @@ public class GameStage extends Stage {
         }
     }
 
-    public void removeActor(Actor actor){
-        if (actor instanceof  KeyboardListener){
+    public void removeActor(Actor actor) {
+        if (actor instanceof KeyboardListener) {
             inputListener.unsubscribeKeyboard((KeyboardListener) actor);
         }
-        if (actor instanceof TouchListener){
+        if (actor instanceof TouchListener) {
             inputListener.unsubscribeTouch((TouchListener) actor);
         }
 
@@ -123,11 +128,9 @@ public class GameStage extends Stage {
     }
 
     private void createBody(BaseActor actor) {
-        if (world == null){
-            return;
-        }
-        Body body = bodyFactory.createBox(world, actor);
-        actor.getPhysicalModel().setBody(body);
+        Body body = bodyFactory.createBox(box2DWorld.getWorld(), actor);
+        System.out.println(body);
+        actor.setBody(body);
 
     }
 

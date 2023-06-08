@@ -29,15 +29,6 @@ public class TilemapHandle extends Actor {
 
     }
 
-    public String getLayerColliderName() {
-        return layerColliderName;
-    }
-
-    public void setLayerColliderName(String layerColliderName) {
-        this.layerColliderName = layerColliderName;
-    }
-
-
     @Override
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);

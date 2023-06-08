@@ -1,11 +1,11 @@
 package com.jhonn.game.actors;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.utils.Align;
 import com.jhonn.game.utils.Interfaces.CollisionObserver;
 import com.jhonn.game.models.PhysicalModel;
 
@@ -16,8 +16,10 @@ import static com.jhonn.game.box2d.Box2dWorld.toUnits;
  * yours actors can use physical
  */
 public abstract class BaseActor extends Actor implements CollisionObserver {
-    private Sprite frame;
+    private final Sprite frame = new Sprite();
     protected final PhysicalModel physicalModel = new PhysicalModel();
+    private Body body;
+
 
     public PhysicalModel getPhysicalModel() {
         return physicalModel;
@@ -28,46 +30,77 @@ public abstract class BaseActor extends Actor implements CollisionObserver {
     /**
      * @param frame sprite for draw in stage
      */
-    public void setFrame(Sprite frame) {
-        if (this.getWidth() == 0 || this.getHeight() == 0) {
-            float width = toUnits(frame.getRegionWidth()) * getScaleX();
-            float height = toUnits(frame.getRegionHeight()) * getScaleY();
-            setSize(width, height);
-            setOrigin(Align.center);
-        }
-        this.frame = frame;
+    protected void setFrame(Sprite frame) {
+
+        float width = toUnits(frame.getRegionWidth());
+        float height = toUnits(frame.getRegionHeight());
+
+        setSize(width, height);
+        setScale(getScaleX(), getScaleY());
+        setOrigin(width / 2, height / 2);
+
+        this.frame.setRegion(frame);
     }
 
+    public Body getBody() {
+        return body;
+    }
+
+    public void setBody(Body body) {
+        this.body = body;
+    }
+
+    @Override
+    protected void positionChanged() {
+        frame.setPosition(getX(), getY());
+    }
+
+    @Override
+    protected void scaleChanged() {
+        frame.setScale(getScaleX(), getScaleY());
+
+    }
+
+    @Override
+    protected void sizeChanged() {
+        frame.setSize(getWidth(), getHeight());
+        frame.setOrigin(getWidth() / 2, getHeight() / 2);
+    }
+
+    @Override
+    protected void rotationChanged() {
+        frame.setRotation(getRotation());
+    }
 
     @Override
     public void act(float delta) {
-        attachBodyToActor();
+        super.act(delta);
+        attachBody();
+
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        if (!isVisible()) return;
-        if (frame == null) return;
-        if (getColor() != null) {
-            frame.setColor(getColor());
+        Color actorColor = getColor();
+        if (actorColor != null) {
+            frame.setColor(actorColor);
         }
-        batch.draw(
-                frame,
-                getX(), getY(),
-                getOriginX(), getOriginY(),
-                getWidth(), getHeight(),
-                getScaleX(), getScaleY(),
-                getRotation()
-        );
+
+        frame.draw(batch, parentAlpha);
+
+
     }
 
-    private void attachBodyToActor() {
-        if (physicalModel.getBody() != null) {
-            Body body = physicalModel.getBody();
-            Vector2 position = body.getPosition();
+    private void attachFrame() {
+
+    }
+
+    private void attachBody() {
+        if (body != null) {
+            Vector2 bodyPosition = body.getPosition();
             float rotation = (float) Math.toDegrees(body.getAngle());
 
-            setPosition(position.x - getOriginX(), position.y - getOriginY());
+            setPosition(bodyPosition.x - getOriginX(), bodyPosition.y - getOriginY());
             setRotation(rotation);
 
         }

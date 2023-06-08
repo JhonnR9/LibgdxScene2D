@@ -35,12 +35,11 @@ public class BaseScreen implements Screen {
 
     public BaseScreen() {
         topDownCamera = new TopDownCamera();
-        stage = new GameStage(new ExtendViewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT, topDownCamera), box2DWorld.getWorld());
+        stage = new GameStage(new ExtendViewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT, topDownCamera), box2DWorld);
 
-        //setup uiStage
-        DimensionModel uiViewportSize = getUiViewportSize();
-        Viewport uiViewport = new FillViewport(uiViewportSize.getWidth(), uiViewportSize.getHeight());
+        Viewport uiViewport = new FillViewport(VIEWPORT_WIDTH * UI_SCALE, VIEWPORT_HEIGHT * UI_SCALE);
         uiStage = new GameStage(uiViewport);
+
         inputMultiplexer = new InputMultiplexer();
         inputListener = new InputListener();
     }
@@ -54,8 +53,6 @@ public class BaseScreen implements Screen {
         inputMultiplexer.addProcessor(stage);
         inputMultiplexer.addProcessor(uiStage);
         inputMultiplexer.addProcessor(inputListener);
-
-
 
     }
 
@@ -98,23 +95,6 @@ public class BaseScreen implements Screen {
         box2DWorld.dispose();
     }
 
-    public void addCollidersObservers() {
-        Array.ArrayIterator<Actor> actors = new Array.ArrayIterator<>(stage.getActors());
-        Array<CollisionObserver> collisionObservers = new Array<>();
-        Class<? extends Actor> baseActorClass = BaseActor.class;
 
-        for (Actor actor : actors) {
-            if (ClassReflection.isAssignableFrom(baseActorClass, actor.getClass())) {
-                CollisionObserver collisionObserver = (CollisionObserver) actor;
-                box2DWorld.getB2DContactListener().addObserver(collisionObserver);
-            }
-        }
-
-    }
-
-
-    private DimensionModel getUiViewportSize() {
-        return new DimensionModel(VIEWPORT_WIDTH * UI_SCALE, VIEWPORT_HEIGHT * UI_SCALE);
-    }
 
 }

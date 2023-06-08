@@ -21,7 +21,7 @@ public class PhysicalModel{
     private BodyShape bodyShape = BodyShape.RECTANGLE;
     private boolean isDestroyed = false;
     private BaseActor bodyUserDate;
-    private Body body;
+
 
     public boolean isStatic() {
         return isStatic;
@@ -87,11 +87,5 @@ public class PhysicalModel{
         this.bodyUserDate = bodyUserDate;
     }
 
-    public Body getBody() {
-        return body;
-    }
 
-    public void setBody(Body body) {
-        this.body = body;
-    }
 }

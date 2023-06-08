@@ -12,4 +12,5 @@ public class Potion extends  BaseItem{
         setFrame(sprite);
         physicalModel.setBodyShape(BodyShape.RECTANGLE);
     }
+
 }
