@@ -1,4 +1,4 @@
-package com.jhonn.game.fatories;
+package com.jhonn.game.factories;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -71,7 +71,7 @@ public class AnimationFactory {
      */
     public <T extends Enum<T>> void create(AnimationModel animationModel, T animationKey) {
         Animation<TextureRegion> animation;
-        animation = new Animation<TextureRegion>(animationModel.getFrameDuration(), createTextureRegions(animationModel));
+        animation = new Animation<>(animationModel.getFrameDuration(), createTextureRegions(animationModel));
 
         if (animationModel.isLoop()) {
             animation.setPlayMode(LOOP);

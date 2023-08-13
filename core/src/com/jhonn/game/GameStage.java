@@ -1,21 +1,18 @@
 package com.jhonn.game;
 
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.jhonn.game.actors.BaseActor;
+import com.jhonn.game.entities.BaseActor;
 import com.jhonn.game.box2d.Box2dWorld;
-import com.jhonn.game.fatories.BodyFactory;
-import com.jhonn.game.utils.Interfaces.CollisionObserver;
-import com.jhonn.game.utils.Interfaces.input.KeyboardListener;
-import com.jhonn.game.utils.Interfaces.input.TouchListener;
+import com.jhonn.game.factories.BodyFactory;
+import com.jhonn.game.Interfaces.input.KeyboardListener;
+import com.jhonn.game.Interfaces.input.TouchListener;
 
 
 public class GameStage extends Stage {
@@ -27,11 +24,9 @@ public class GameStage extends Stage {
         setViewport(viewport);
 
     }
-
     public GameStage(Viewport viewport, Box2dWorld box2DWorld) {
         this.box2DWorld = box2DWorld;
         setViewport(viewport);
-
     }
 
 
@@ -50,7 +45,6 @@ public class GameStage extends Stage {
         }
         super.addActor(actor);
     }
-
 
     @Override
     public boolean keyDown(int keycode) {
@@ -129,7 +123,6 @@ public class GameStage extends Stage {
 
     private void createBody(BaseActor actor) {
         Body body = bodyFactory.createBox(box2DWorld.getWorld(), actor);
-        System.out.println(body);
         actor.setBody(body);
 
     }

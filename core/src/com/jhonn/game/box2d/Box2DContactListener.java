@@ -2,7 +2,7 @@ package com.jhonn.game.box2d;
 
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
-import com.jhonn.game.utils.Interfaces.CollisionObserver;
+import com.jhonn.game.Interfaces.CollisionObserver;
 
 public class Box2DContactListener implements ContactListener {
 

@@ -1,4 +1,4 @@
-package com.jhonn.game.utils.Interfaces.input;
+package com.jhonn.game.Interfaces.input;
 
 public interface TouchListener {
     boolean touchDown(int screenX, int screenY, int pointer, int button);

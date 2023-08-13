@@ -1,4 +1,4 @@
-package com.jhonn.game.utils.Interfaces;
+package com.jhonn.game.Interfaces;
 
 import com.badlogic.gdx.physics.box2d.Body;
 

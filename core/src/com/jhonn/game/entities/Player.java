@@ -1,4 +1,4 @@
-package com.jhonn.game.actors;
+package com.jhonn.game.entities;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -6,40 +6,39 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.ColorAction;
-import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.jhonn.game.managers.InventoryManager;
 import com.jhonn.game.models.AnimationModel;
-import com.jhonn.game.fatories.AnimationFactory;
-import com.jhonn.game.utils.Interfaces.input.KeyboardListener;
+import com.jhonn.game.factories.AnimationFactory;
+import com.jhonn.game.Interfaces.input.KeyboardListener;
 import com.jhonn.game.utils.enums.CardinalPoint;
 import com.jhonn.game.utils.TopDownMove;
-
-import java.awt.*;
 
 public final class Player extends BaseActor implements KeyboardListener {
     private final AnimationFactory animationFactory = new AnimationFactory();
     private final TopDownMove topDownMove = new TopDownMove(5);
-    private final InventoryManager inventory = new InventoryManager();
-
     private final ColorAction restoreColorAction = Actions.color(getColor(), 0.1f);
     private final ColorAction hitColorAction = Actions.color(Color.RED, 0.1f);
+    private final InventoryManager inventoryManager;
+
 
     private enum Animations {
         DOWN, LEFT, RIGHT, UP, DOWN_LEFT, DOWN_RIGHT, UP_LEFT, UP_RIGHT
     }
 
-    public Player(float x, float y) {
+    public InventoryManager getInventoryManager() {
+        return inventoryManager;
+    }
+
+    public Player(float x, float y, InventoryManager inventoryManager) {
+        this.inventoryManager = inventoryManager;
         setPosition(x, y);
         createAnimations();
-        setFrame(animationFactory.getFrame());
+        setFrame(animationFactory.getFrame(), true);
         physicalModel.setStatic(false);
         physicalModel.setLinearDamping(3f);
         physicalModel.setBodyUserDate(this);
         physicalModel.setSize(new Vector2(.5f, .5f));
-    }
-
-    public InventoryManager getInventory() {
-        return inventory;
+        physicalModel.setDensity(1f);
     }
 
     private void createAnimations() {
@@ -72,19 +71,20 @@ public final class Player extends BaseActor implements KeyboardListener {
     }
 
 
-
     @Override
     public void act(float delta) {
         super.act(delta);
         topDownMove.update(delta, getBody());
-
-        if (topDownMove.getCardinalPoint() == CardinalPoint.NULL) return;
+        if (!isMoving()) return;
         changeAnimation();
         animationFactory.update(delta);
-
-        setFrame(animationFactory.getFrame());
+        setFrame(animationFactory.getFrame(), false);
 
     }
+    private boolean isMoving(){
+        return topDownMove.getCardinalPoint() != CardinalPoint.NULL;
+    }
+
 
     @Override
     public void beginContact(Body bodyA, Body bodyB) {
@@ -135,10 +135,9 @@ public final class Player extends BaseActor implements KeyboardListener {
 
     @Override
     public boolean keyDown(int keycode) {
-        if (keycode == Input.Keys.E) {
-            hitDamage();
-        }
-        return false;
+        boolean isDamage = (keycode == Input.Keys.E);
+        if (isDamage) hitDamage();
+        return isDamage;
     }
 
     @Override

@@ -1,27 +1,26 @@
 package com.jhonn.game.models;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.jhonn.game.actors.BaseActor;
+import com.jhonn.game.entities.BaseActor;
 import com.jhonn.game.utils.enums.BodyShape;
-
-import java.awt.*;
 
 /**
  * class to define physical aspect in BaseActor material and constants like velocity damping and others
  *
- * @see com.jhonn.game.actors.BaseActor
+ * @see com.jhonn.game.entities.BaseActor
  */
-public class PhysicalModel{
+public class PhysicalModel {
     private boolean isStatic = true;
-    private Float linearDamping;
-    private boolean isTrigger = false;
+    private float linearDamping;
+    private boolean isSensor = false;
     private Vector2 size;
     private float density = .5f;
     private BodyShape bodyShape = BodyShape.RECTANGLE;
-    private boolean isDestroyed = false;
     private BaseActor bodyUserDate;
 
+    public PhysicalModel(BaseActor parent) {
+        this.bodyUserDate = parent;
+    }
 
     public boolean isStatic() {
         return isStatic;
@@ -39,12 +38,12 @@ public class PhysicalModel{
         this.linearDamping = linearDamping;
     }
 
-    public boolean isTrigger() {
-        return isTrigger;
+    public boolean isSensor() {
+        return isSensor;
     }
 
-    public void setTrigger(boolean trigger) {
-        isTrigger = trigger;
+    public void setSensor(boolean sensor) {
+        isSensor = sensor;
     }
 
     public Vector2 getSize() {
@@ -69,14 +68,6 @@ public class PhysicalModel{
 
     public void setBodyShape(BodyShape bodyShape) {
         this.bodyShape = bodyShape;
-    }
-
-    public boolean isDestroyed() {
-        return isDestroyed;
-    }
-
-    public void setDestroyed(boolean destroyed) {
-        isDestroyed = destroyed;
     }
 
     public BaseActor getBodyUserDate() {

@@ -1,7 +1,7 @@
 package com.jhonn.game.managers;
 
 import com.badlogic.gdx.utils.Array;
-import com.jhonn.game.actors.items.BaseItem;
+import com.jhonn.game.entities.items.BaseItem;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;

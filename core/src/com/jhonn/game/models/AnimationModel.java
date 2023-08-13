@@ -7,7 +7,7 @@ public class AnimationModel {
         return textureRegion;
     }
 
-    private String textureRegion;
+    private final String textureRegion;
     private float frameDuration = 1 / 8f;
 
     public float getFrameDuration() {

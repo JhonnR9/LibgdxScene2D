@@ -1,4 +1,6 @@
-package com.jhonn.game.actors;
+package com.jhonn.game.entities;
+
+
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -6,8 +8,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.jhonn.game.utils.Interfaces.CollisionObserver;
 import com.jhonn.game.models.PhysicalModel;
+import com.jhonn.game.Interfaces.CollisionObserver;
 
 import static com.jhonn.game.box2d.Box2dWorld.toUnits;
 
@@ -17,9 +19,8 @@ import static com.jhonn.game.box2d.Box2dWorld.toUnits;
  */
 public abstract class BaseActor extends Actor implements CollisionObserver {
     private final Sprite frame = new Sprite();
-    protected final PhysicalModel physicalModel = new PhysicalModel();
+    protected final PhysicalModel physicalModel = new PhysicalModel(this);
     private Body body;
-
 
     public PhysicalModel getPhysicalModel() {
         return physicalModel;
@@ -27,17 +28,19 @@ public abstract class BaseActor extends Actor implements CollisionObserver {
 
     private boolean isDestroyed = false;
 
+
     /**
      * @param frame sprite for draw in stage
+     * @param firstTime It's the first time you're setting the frame necessary for define size of actor
      */
-    protected void setFrame(Sprite frame) {
-
-        float width = toUnits(frame.getRegionWidth());
-        float height = toUnits(frame.getRegionHeight());
-
-        setSize(width, height);
-        setScale(getScaleX(), getScaleY());
-        setOrigin(width / 2, height / 2);
+    protected void setFrame(Sprite frame, boolean firstTime) {
+        if (firstTime){
+            float width = toUnits(frame.getRegionWidth());
+            float height = toUnits(frame.getRegionHeight());
+            setSize(width, height);
+            setScale(getScaleX(), getScaleY());
+            setOrigin(width / 2, height / 2);
+        }
 
         this.frame.setRegion(frame);
     }

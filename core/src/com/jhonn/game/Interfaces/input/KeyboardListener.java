@@ -1,4 +1,4 @@
-package com.jhonn.game.utils.Interfaces.input;
+package com.jhonn.game.Interfaces.input;
 
 public interface KeyboardListener {
     boolean keyDown(int keycode);

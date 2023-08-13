@@ -1,27 +1,29 @@
-package com.jhonn.game.actors;
+package com.jhonn.game.entities;
 
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.utils.Align;
 import com.jhonn.game.GameStage;
+import com.jhonn.game.factories.SlotPositionFactory;
+import com.jhonn.game.managers.InventoryManager;
 import com.jhonn.game.managers.ResourceManager;
-import com.jhonn.game.utils.Interfaces.input.KeyboardListener;
-import com.jhonn.game.utils.Interfaces.input.TouchListener;
+import com.jhonn.game.Interfaces.input.KeyboardListener;
 
-import static com.jhonn.game.box2d.Box2dWorld.toUnits;
+import java.util.List;
 
 public class Inventory extends Actor implements KeyboardListener {
-    private TextureRegion textureRegion;
+    private final InventoryManager inventoryManager;
+    private final TextureRegion textureRegion;
+    public InventoryManager getInventoryManager() {
+        return inventoryManager;
+    }
 
-    public Inventory() {
+    public Inventory(InventoryManager inventoryManager) {
+        this.inventoryManager = inventoryManager;
         TextureAtlas atlas = ResourceManager.getInstance().getDefaultAtlas();
         textureRegion = atlas.findRegion("inventory_big");
         setScale(.7f);
@@ -32,8 +34,6 @@ public class Inventory extends Actor implements KeyboardListener {
             setSize(width, height);
         }
         addAction(Actions.hide());
-
-
     }
 
     @Override
@@ -56,6 +56,16 @@ public class Inventory extends Actor implements KeyboardListener {
         float y = (((stage.getHeight()) / 2) - ((getHeight() / 2)) * getScaleY()) - yOffset;
 
         this.setPosition(x, y);
+
+        SlotPositionFactory slotPositionFactory = new SlotPositionFactory(getX(), getY());
+
+        float padding =15.5f;
+        float margin = .18f;
+        float rows = 3;
+        float columns = 7;
+
+         slotPositionFactory.getSlotPositions(padding, margin, rows, columns);
+
     }
 
     @Override
@@ -67,11 +77,11 @@ public class Inventory extends Actor implements KeyboardListener {
                 addAction(Actions.show());
             }
         }
-        if (keycode == Input.Keys.R){
+        if (keycode == Input.Keys.R) {
             GameStage gameStage = (GameStage) getStage();
             gameStage.removeActor(this);
         }
-        return true;
+        return false;
     }
 
     @Override

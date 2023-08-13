@@ -1,4 +1,4 @@
-package com.jhonn.game.actors.tilemap;
+package com.jhonn.game.entities.tilemap;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;

@@ -2,8 +2,8 @@ package com.jhonn.game;
 
 import com.badlogic.gdx.InputProcessor;
 
-import com.jhonn.game.utils.Interfaces.input.KeyboardListener;
-import com.jhonn.game.utils.Interfaces.input.TouchListener;
+import com.jhonn.game.Interfaces.input.KeyboardListener;
+import com.jhonn.game.Interfaces.input.TouchListener;
 
 import java.util.ArrayList;
 import java.util.List;

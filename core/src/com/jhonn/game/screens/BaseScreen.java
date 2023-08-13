@@ -5,20 +5,12 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.jhonn.game.GameStage;
-import com.jhonn.game.InputListener;
-import com.jhonn.game.actors.BaseActor;
 
 import com.jhonn.game.box2d.Box2dWorld;
-import com.jhonn.game.utils.Interfaces.CollisionObserver;
-import com.jhonn.game.models.DimensionModel;
 import com.jhonn.game.utils.TopDownCamera;
 
 
@@ -31,7 +23,6 @@ public class BaseScreen implements Screen {
     protected final Box2dWorld box2DWorld = new Box2dWorld();
     protected final TopDownCamera topDownCamera;
     private final InputMultiplexer inputMultiplexer;
-    protected final InputListener inputListener;
 
     public BaseScreen() {
         topDownCamera = new TopDownCamera();
@@ -41,7 +32,6 @@ public class BaseScreen implements Screen {
         uiStage = new GameStage(uiViewport);
 
         inputMultiplexer = new InputMultiplexer();
-        inputListener = new InputListener();
     }
 
     @Override
@@ -52,7 +42,6 @@ public class BaseScreen implements Screen {
         Gdx.input.setInputProcessor(inputMultiplexer);
         inputMultiplexer.addProcessor(stage);
         inputMultiplexer.addProcessor(uiStage);
-        inputMultiplexer.addProcessor(inputListener);
 
     }
 
