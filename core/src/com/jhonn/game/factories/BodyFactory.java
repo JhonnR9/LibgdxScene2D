@@ -24,10 +24,12 @@ public class BodyFactory {
 
         bodyDef.type = physicalModel.isStatic() ? BodyDef.BodyType.StaticBody : BodyDef.BodyType.DynamicBody;
 
-        bodyDef.position.set(new Vector2(actor.getX() + actor.getOriginX(), actor.getY() + actor.getOriginY()));
+        Vector2 bodyPosition = new Vector2(actor.getX() + actor.getOriginX(), actor.getY() + actor.getOriginY());
+
+        bodyDef.position.set(new Vector2(bodyPosition).add(physicalModel.getBodyPositionOffset()));
 
         Body body = world.createBody(bodyDef);
-
+        body.setFixedRotation(physicalModel.isFixRotation());
         configureBoxShape(body, actor);
 
         body.setLinearDamping(physicalModel.getLinearDamping());

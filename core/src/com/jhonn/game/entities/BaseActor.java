@@ -94,17 +94,16 @@ public abstract class BaseActor extends Actor implements CollisionObserver {
 
     }
 
-    private void attachFrame() {
-
-    }
-
     private void attachBody() {
         if (body != null) {
             Vector2 bodyPosition = body.getPosition();
             float rotation = (float) Math.toDegrees(body.getAngle());
 
-            setPosition(bodyPosition.x - getOriginX(), bodyPosition.y - getOriginY());
+            Vector2 bodyPositionOffset = physicalModel.getBodyPositionOffset();
+
+            setPosition((bodyPosition.x - getOriginX()) + bodyPositionOffset.x, (bodyPosition.y - getOriginY()) + bodyPositionOffset.y);
             setRotation(rotation);
+
 
         }
     }

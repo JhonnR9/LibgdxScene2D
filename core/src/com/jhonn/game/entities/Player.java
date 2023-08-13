@@ -20,6 +20,16 @@ public final class Player extends BaseActor implements KeyboardListener {
     private final ColorAction hitColorAction = Actions.color(Color.RED, 0.1f);
     private final InventoryManager inventoryManager;
 
+    @Override
+    public void beginContact(Body bodyA, Body bodyB) {
+
+    }
+
+    @Override
+    public void endContact(Body bodyA, Body bodyB) {
+
+    }
+
 
     private enum Animations {
         DOWN, LEFT, RIGHT, UP, DOWN_LEFT, DOWN_RIGHT, UP_LEFT, UP_RIGHT
@@ -34,11 +44,8 @@ public final class Player extends BaseActor implements KeyboardListener {
         setPosition(x, y);
         createAnimations();
         setFrame(animationFactory.getFrame(), true);
-        physicalModel.setStatic(false);
-        physicalModel.setLinearDamping(3f);
-        physicalModel.setBodyUserDate(this);
-        physicalModel.setSize(new Vector2(.5f, .5f));
-        physicalModel.setDensity(1f);
+
+        setupPhysicalModel();
     }
 
     private void createAnimations() {
@@ -66,6 +73,17 @@ public final class Player extends BaseActor implements KeyboardListener {
 
     }
 
+    private void setupPhysicalModel(){
+        physicalModel.setStatic(false);
+        physicalModel.setLinearDamping(3f);
+        physicalModel.setBodyUserDate(this);
+        physicalModel.setSize(new Vector2(.5f, .2f));
+        physicalModel.setDensity(1f);
+        physicalModel.setBodyPositionOffsetY(.5f);
+        physicalModel.setFixRotation(true);
+    }
+
+
     private void hitDamage() {
         addAction(Actions.sequence(hitColorAction, restoreColorAction));
     }
@@ -85,16 +103,6 @@ public final class Player extends BaseActor implements KeyboardListener {
         return topDownMove.getCardinalPoint() != CardinalPoint.NULL;
     }
 
-
-    @Override
-    public void beginContact(Body bodyA, Body bodyB) {
-
-    }
-
-    @Override
-    public void endContact(Body bodyA, Body bodyB) {
-
-    }
 
     private void changeAnimation() {
         CardinalPoint cardinalPoint = topDownMove.getCardinalPoint();

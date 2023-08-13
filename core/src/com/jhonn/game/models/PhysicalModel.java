@@ -18,6 +18,32 @@ public class PhysicalModel {
     private BodyShape bodyShape = BodyShape.RECTANGLE;
     private BaseActor bodyUserDate;
 
+    private boolean fixRotation = false;
+
+    public boolean isFixRotation() {
+        return fixRotation;
+    }
+
+    public void setFixRotation(boolean fixRotation) {
+        this.fixRotation = fixRotation;
+    }
+
+    private Vector2 bodyPositionOffset = new Vector2();
+
+    public Vector2 getBodyPositionOffset() {
+        return bodyPositionOffset;
+    }
+
+    public void setBodyPositionOffset(Vector2 bodyPositionOffset) {
+        this.bodyPositionOffset = bodyPositionOffset;
+    }
+    public void setBodyPositionOffsetX(float xOffset){
+        this.bodyPositionOffset.x = xOffset;
+    }
+    public void setBodyPositionOffsetY(float yOffset){
+        this.bodyPositionOffset.y = yOffset;
+    }
+
     public PhysicalModel(BaseActor parent) {
         this.bodyUserDate = parent;
     }
